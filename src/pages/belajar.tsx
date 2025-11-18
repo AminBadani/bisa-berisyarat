@@ -1,26 +1,16 @@
-import { useEffect } from "react"
-import Card from "../components/Card"
 import { FaBook, FaComment, FaTrophy } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
+import Card from "../components/Card"
+import Modul from "../models/Modul"
+
 function Belajar() {
+  const modulHuruf = new Modul('huruf', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z', 0, 26, <FaBook className="text-white w-6 h-6" />);
+  const modulKata= new Modul('kata', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari', 0, 10, <FaComment className="text-white  w-6 h-6" />);
+
   const modul = [
-    {
-      id: 'huruf',
-      title: 'Belajar huruf',
-      description: 'Pelajari isyarat untuk huruf A-Z',
-      completed: 5,
-      count: 26,
-      icon: <FaBook className="w-8 h-8 text-white" />
-    },
-    {
-      id: 'kata',
-      title: 'Belajar kata sehari-hari',
-      description: 'Pelajari kata yang sering digunakan',
-      completed: 1,
-      count: 10,
-      icon: <FaComment className="w-8 h-8 text-white" />
-    }
+    modulHuruf,
+    modulKata
   ]
 
   const chartData = [
@@ -38,9 +28,6 @@ function Belajar() {
     },
   ]
 
-  useEffect(() => {
-
-  }, [])
   return (
     <div className="container mx-auto pt-8">
       <header className="mb-8 text-center">
@@ -54,11 +41,11 @@ function Belajar() {
             modul.map((item) => {
               return (
                 <Card
-                  judul={item.title}
-                  deskripsi={item.description}
-                  selesai={item.completed}
-                  jumlah={item.count}
-                  ikon={item.icon}
+                  judul={item.getId}
+                  deskripsi={item.getDeskripsi}
+                  selesai={item.getJumlahSelesai}
+                  jumlah={item.getJumlahPelajaran}
+                  icon={item.icon}
                 />
               )
             })
