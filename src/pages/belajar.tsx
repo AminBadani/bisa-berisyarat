@@ -42,13 +42,13 @@ function Belajar() {
 
   }, [])
   return (
-    <div className="container mx-auto px-4 pt-8">
+    <div className="container mx-auto pt-8">
       <header className="mb-8 text-center">
         <h1 className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">✨ Halaman Belajar ✨</h1>
         <p className="text-gray-700">Pilih modul pembelajaran untuk memulai petualangan!</p>
       </header>
 
-      <div className="grid grid-cols-[40%_55%] gap-10">
+      <div className="grid grid-cols-[40%_57%] gap-10">
         <div className="grid grid-cols-1 gap-2">
           {
             modul.map((item) => {
@@ -65,7 +65,7 @@ function Belajar() {
           }
         </div>
 
-        <div className="grid grid-rows-[15%_70%] gap-y-6">
+        <div className="grid  gap-y-6">
 
           <div className="grid grid-cols-2 gap-2">
             <div className="p-3 border-2 shadow-lg bg-card text-card-foreground border-white bg-linear-to-br from-yellow-50 to-orange-50">
