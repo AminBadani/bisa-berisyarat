@@ -1,0 +1,26 @@
+function Card({ judul, deskripsi, selesai, jumlah }: { judul: string, deskripsi: string, selesai: number, jumlah: number }) {
+  return (
+    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border p-6 cursor-pointer hover:shadow-2xl transition-all h-full border-white bg-linear-to-br from-blue-100 to-cyan-100">
+      <div className="flex flex-col h-full">
+        <div className="flex items-start justify-between mb-4">
+          <div className={`p-3 rounded-xl bg-linear-to-br from-pink-400 to-rose-500  shadow-lg`}>
+          </div>
+        </div>
+        <h2 className="mb-2 text-gray-800">{judul}</h2>
+        <p className="text-gray-700 mb-4 grow">{deskripsi}</p>
+        <div className="space-y-2">
+          <progress max={jumlah} value={selesai + 10} className="rounded-full overflow-hidden w-full h-2
+            bg-gray-300
+            [&::-webkit-progress-bar]:bg-gray-300
+            [&::-webkit-progress-value]:bg-gray-800
+            [&::-moz-progress-bar]:bg-gray-800"></progress>
+          <p className="text-gray-600">
+            🎯 {selesai} / {jumlah} selesai
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Card;
