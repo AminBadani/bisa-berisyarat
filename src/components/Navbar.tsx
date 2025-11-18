@@ -48,7 +48,7 @@ function Navbar() {
             }
           </div>
 
-          <select name="bahasa" id="bahasa" className="text-white bg-white/30 px-4 py-2 rounded-full">
+          <select name="bahasa" id="bahasa" className="text-white bg-white/30 px-4 py-2 rounded-full transition-all hover:scale-110 hover:cursor-pointer">
             <option value="indonesia">Indonesia</option>
             <option value="english">English</option>
           </select>
