@@ -1,11 +1,14 @@
 import { ReactNode } from "react";
+import Materi from "./Materi";
 
 class Modul {
     protected id: string;
     protected judul: string;
     protected deskripsi: string;
+    public materi: Materi[];
+
     protected jumlahSelesai: number;
-    protected jumlahPelajaran: number;
+    protected jumlahPelajaran: number
     public icon: ReactNode;
 
     constructor();
@@ -13,23 +16,23 @@ class Modul {
         id: string,
         judul: string,
         deskripsi: string,
-        jumlahSelesai: number,
-        jumlahPelajaran: number,
+        materi: Materi[],
         icon: ReactNode
     )
     constructor(
         id: string = '',
         judul: string = '',
         deskripsi: string = '',
-        jumlahSelesai: number = 0,
-        jumlahPelajaran: number = 0,
+        materi: Materi[] = [],
         icon: ReactNode = null
     ) {
         this.id = id;
         this.judul = judul;
         this.deskripsi = deskripsi;
-        this.jumlahSelesai = jumlahSelesai;
-        this.jumlahPelajaran = jumlahPelajaran
+        this.materi = materi;
+
+        this.jumlahSelesai = materi.filter(item => item.getSelesai == true).length;
+        this.jumlahPelajaran = materi.length
         this.icon = icon;
     }
 
@@ -47,6 +50,14 @@ class Modul {
 
     get getJumlahPelajaran() { return this.jumlahPelajaran }
     set setJumlahPelajaran(value: number) { this.jumlahPelajaran = value }
+
+    materiSelesai(id: string) {
+        const materi = this.materi.find(a => a.getId === id);
+        if (materi) {
+            materi.setSelesai = true;
+            window.api.addFinished(this.id, id);
+        }
+    }
 }
 
 export default Modul
