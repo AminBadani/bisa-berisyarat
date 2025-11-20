@@ -1,6 +1,18 @@
-function Card({ judul, deskripsi, selesai, jumlah, icon }: { judul: string, deskripsi: string, selesai: number, jumlah: number, icon: any }) {
+type Props = {
+  judul: string; 
+  deskripsi: string; 
+  selesai: number; 
+  jumlah: number; 
+  icon: any; 
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+};
+
+function Card({ judul, deskripsi, selesai, jumlah, icon, onClick }: Props) {
   return (
-    <div className="bg-card text-card-foreground flex flex-col rounded-xl border p-4 cursor-pointer hover:shadow-2xl transition-all h-full border-white bg-linear-to-br from-blue-100 to-cyan-100">
+    <div 
+    className="px-7 bg-card text-card-foreground flex flex-col rounded-xl border p-4 cursor-pointer hover:shadow-2xl transition-all h-full border-white bg-linear-to-br from-blue-100 to-cyan-100"
+    onClick={onClick}
+    >
       
       <div className="flex flex-col">
         <div className="flex items-start justify-between mb-4">
