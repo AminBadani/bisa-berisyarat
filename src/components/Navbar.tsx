@@ -10,7 +10,7 @@ function Navbar() {
   ];
 
   return (
-    <nav className='bg-linear-to-r from-purple-500 via-pink-500 to-orange-400 shadow-lg sticky top-0 z-50" role="navigation" aria-label="Main navigation"'>
+    <nav className="bg-linear-to-r from-purple-500 via-pink-500 to-orange-400 shadow-lg sticky top-0 z-50" role="navigation" aria-label="Main navigation">
 
       <div className="container mx-auto px-4 py-4">
 
