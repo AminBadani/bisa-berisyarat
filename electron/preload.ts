@@ -22,3 +22,15 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+contextBridge.exposeInMainWorld("api", {
+  get: (key: string) => ipcRenderer.invoke("store:get", key),
+  set: (key: string, value: string | number) => ipcRenderer.invoke("store:set", key, value),
+  clearFinished: () => ipcRenderer.invoke("store:finished:clear"),
+  addFinished: (learnKey: string, item: any) =>
+    ipcRenderer.invoke("store:finished:add", learnKey, item),
+  removeFinished: (learnKey: string, item: any) =>
+    ipcRenderer.invoke("store:finished:remove", learnKey, item),
+
+  getModule: (learnKey: string) => ipcRenderer.invoke("store:module:get", learnKey),
+});

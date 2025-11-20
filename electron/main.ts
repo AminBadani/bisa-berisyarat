@@ -1,7 +1,8 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import store from './storage.js'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -63,8 +64,73 @@ app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
+    
     createWindow()
   }
 })
+
+// Get value
+ipcMain.handle("store:get", (_, key) => {
+  return store.get(key);
+});
+
+// Set value
+ipcMain.handle("store:set", (_, key, value) => {
+  store.set(key, value);
+});
+
+ipcMain.handle("store:finished:add", (_, learnKey, item) => {
+  const modules = store.get("module") || [];
+
+  const updated = modules.map(m => {
+    if (m.learn !== learnKey) return m;
+
+    // Avoid duplicates
+    const finished = Array.isArray(m.finished) ? m.finished : [];
+    if (!finished.includes(item)) {
+      finished.push(item);
+    }
+
+    return { ...m, finished };
+  });
+
+  store.set("module", updated);
+  return updated;
+});
+
+ipcMain.handle("store:finished:remove", (_, learnKey, item) => {
+  const modules = store.get("module") || [];
+
+  const updated = modules.map(m => {
+    if (m.learn !== learnKey) return m;
+
+    const finished = (m.finished || []).filter(x => x !== item);
+
+    return { ...m, finished };
+  });
+
+  store.set("module", updated);
+  return updated;
+});
+
+ipcMain.handle("store:finished:clear", () => {
+  const modules = store.get("module") || [];
+
+  const updated = modules.map(m => ({
+    ...m,
+    finished: []        // clear only the finished array
+  }));
+
+  store.set("module", updated);
+  return updated;
+});
+
+ipcMain.handle("store:module:get", (_, learnKey) => {
+  const modules = store.get("module") || [];
+  const mod = modules.find(m => m.learn === learnKey)
+  if (!mod) throw new Error(`Module "${learnKey}" not found`);
+  return mod;
+});
+
 
 app.whenReady().then(createWindow)
