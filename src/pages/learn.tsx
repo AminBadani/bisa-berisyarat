@@ -12,32 +12,25 @@ import WordModule from "../models/modules/WordModule";
 import letter from "../data/letter.json";
 import word from "../data/word.json";
 
+type ChartQuiz = {
+  quiz: string,
+  skor: number,
+  maksimal: number,
+  persentase: number,
+}
+
 function Learn() {
-  
+
   const letterImages: Record<string, string> = import.meta.glob('../assets/letter/*.png', { eager: true, import: 'default' });
 
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
+  const [chartQuiz, setChartQuiz] = useState<ChartQuiz[]>([]);
 
   const modules = useModulStore(s => s.modules);
   const setModules = useModulStore(s => s.setModules);
 
   const currentModule = selectedModule?.materials[currentLearningIndex || 0];
-
-  const chartData = [
-    {
-      quiz: 'Kuis 1',
-      skor: 2,
-      maksimal: 5,
-      persentase: ((2 / 5) * 100).toFixed(0),
-    },
-    {
-      quiz: 'Kuis 2',
-      skor: 5,
-      maksimal: 5,
-      persentase: ((5 / 5) * 100).toFixed(0),
-    },
-  ]
 
   function doneLearned(materialIndex: number) {
     if (!selectedModule) return;
@@ -56,33 +49,49 @@ function Learn() {
   }
 
   useEffect(() => {
-    window.api.getModule("letter").then(result => {
-      const letterModule = new AlphabetModule('letter', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
+    window.api.get("module").then(result => {
+
+      const letters = result.find((item: any) => item.learn === 'letter')
+      const letterModule = new AlphabetModule('Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
         letter.map(item =>
           new LearningMaterial(
             item.letter,
             item.description,
-            result.finished.includes(item.letter),
+            letters['finished'].includes(item.letter),
             letterImages[`../assets/letter/${item.letter}.png`],
             '')
         ),
         <FaBook className="text-white w-6 h-6" />
       )
 
-      const wordModule = new WordModule('word', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
+      const words = result.find((item: any) => item.learn === 'word')
+      const wordModule = new WordModule('Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
         word.map(item =>
           new LearningMaterial(
             item.word,
             item.description,
-            false,
+            words['finished'].includes(item.word),
             '',
             '')
         ),
         <FaComment className="text-white  w-6 h-6" />
       );
 
-      setModules([letterModule, wordModule ]);
+      setModules([letterModule, wordModule]);
     });
+
+    window.api.getQuiz().then(result => {
+      setChartQuiz(
+        result.map((item: any, index: any) => {
+          return {
+            quiz: `Kuis ${index + 1}`,
+            skor: item.score,
+            maksimal: item.total,
+            persentase: Number(((item.score / item.total) * 100).toFixed(0)),
+          }
+        })
+      )
+    })
   }, [])
 
   return (
@@ -98,24 +107,20 @@ function Learn() {
 
             <div className="grid grid-cols-[40%_57%] gap-10">
               <div className="grid grid-cols-1 gap-2">
-                <Card
-                  key={modules[0]?.id}
-                  judul={modules[0]?.title}
-                  deskripsi={modules[0]?.description}
-                  selesai={modules[0]?.countFinished}
-                  jumlah={modules[0]?.countMaterials}
-                  icon={modules[0]?.icon}
-                  onClick={() => { setSelectedModule(modules[0]); }}
-                />
-                <Card
-                  key={modules[1]?.id}
-                  judul={modules[1]?.title}
-                  deskripsi={modules[1]?.description}
-                  selesai={modules[1]?.countFinished}
-                  jumlah={modules[1]?.countMaterials}
-                  icon={modules[1]?.icon}
-                  onClick={() => { setSelectedModule(modules[1]); }}
-                />
+                {
+                  modules.map(item => (
+                    <Card
+                      key={item.id}
+                      judul={item.title}
+                      deskripsi={item.description}
+                      selesai={item.countFinished}
+                      jumlah={item.countMaterials}
+                      icon={item.icon}
+                      onClick={() => { setSelectedModule(item); console.log(chartQuiz) }}
+                    />
+                  ))
+
+                }
               </div>
 
               <div className="grid gap-y-6">
@@ -149,7 +154,7 @@ function Learn() {
                 <div className="p-6 bg-linear-to-br from-yellow-50 to-orange-50 border-2 shadow-lg border-white h-fit">
                   <h2 className="text-gray-800 mb-6">📈 Grafik Perkembangan Skor Kuis</h2>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartData}>
+                    <LineChart data={chartQuiz}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="quiz" />
                       <YAxis domain={[0, 5]} />

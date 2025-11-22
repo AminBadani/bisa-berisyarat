@@ -1,41 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaAward, FaChartLine, FaStar, FaTrophy } from "react-icons/fa";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useModulStore } from "../store/modulStore";
 
+type LearningChart = {
+  name: string,
+  selesai: number,
+  total: number,
+  persentase: number,
+}
+
+type QuizChart = {
+  quiz: string,
+  skor: number,
+  maksimal: number,
+  persentase: number,
+}
+
 function Progress() {
   const [statistik, setStatistik] = useState('belajar');
-  const { modules } = useModulStore();
+  const [learningChartData, setLearningChartData] = useState<LearningChart[]>([])
+  const [quizChartData, setquizChartData] = useState<QuizChart[]>([])
 
-  const learningChartData = [
-    {
-      name: "Huruf",
-      selesai: 14,
-      total: 26,
-      persentase: (14 / 26 * 100).toFixed(0),
-    },
-    {
-      name: "Kata",
-      selesai: 0,
-      total: 10,
-      persentase: (0 / 10 * 100).toFixed(0),
-    }
-  ]
+  const modules = useModulStore(s => s.modules);
 
-  const quizChartData = [
-    {
-      quiz: 'Kuis 1',
-      skor: 2,
-      maksimal: 5,
-      persentase: ((2 / 5) * 100).toFixed(0),
-    },
-    {
-      quiz: 'Kuis 2',
-      skor: 5,
-      maksimal: 5,
-      persentase: ((5 / 5) * 100).toFixed(0),
-    },
-  ]
+  useEffect(() => {
+    setLearningChartData(
+      modules.map((item) => {
+        return {
+          name: item.id == "letter" ? "Huruf" : "Kata",
+          selesai: item.countFinished,
+          total: item.countMaterials,
+          persentase: Number(((item.countFinished / item.countMaterials) * 100).toFixed(0))
+        }
+      })
+    )
+
+    window.api.getQuiz().then(result => {
+      setquizChartData(
+        result.map((item: any, index: any) => {
+          return {
+            quiz: `Kuis ${index + 1}`,
+            skor: item.score,
+            maksimal: item.total,
+            persentase: Number(((item.score / item.total) * 100).toFixed(0)),
+          }
+        })
+      )
+    })
+  }, [])
 
   return (
     <div className="container mx-auto pt-8">
