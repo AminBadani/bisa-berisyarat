@@ -1,25 +1,38 @@
+/**
+ * Merepresentasikan soal yang akan dikejakan dalam bentuk pilihan ganda,
+ * berisi id, tipe, isi soal, pilihan jawaban, dan pilihan yang benar
+ */
 class Soal {
     protected _id: number;
     protected _type: string;
     protected _question: string;
     protected _description: string;
     protected _options: any[];
-    protected _answer: number;
+    protected _correctAnswer: number;
 
+    /**
+     * 
+     * @param id - nilai unik dari soal (dalam bentuk angka), misal 1, 2, 10
+     * @param type - tipe dari soal, ada 2 tipe: 'choose-letter' atau 'choose-image'
+     * @param question - isi dari pertanyaan, bisa berupa huruf atau lokasi file foto
+     * @param description - deskripsi untuk menjelaskan hal yang harus dilakukan
+     * @param options - pilihan jawaban yang bisa dipilih
+     * @param answer - pilihan jawaban benar (dalam bentuk angka index)
+     */
     constructor(
-        id: number = 0,
-        type: string = '',
-        question: string = '',
-        description: string = '',
-        options: any[] = [],
-        answer: number = -1,
+        id: number,
+        type: string,
+        question: string,
+        description: string,
+        options: any[],
+        answer: number
     ) {
         this._id = id;
         this._type = type;
         this._question = question;
         this._description = description;
         this._options = options;
-        this._answer = answer;
+        this._correctAnswer = answer;
     }
 
     get id() { return this._id }
@@ -37,8 +50,8 @@ class Soal {
     get options(): any[] { return this._options }
     set options(value: []) { this._options = value }
 
-    get answer() { return this._answer }
-    set answer(value: number) { this._answer = value }
+    get correctAnswer() { return this._correctAnswer }
+    set correctAnswer(value: number) { this._correctAnswer = value }
 }
 
 export default Soal;

@@ -2,6 +2,10 @@ import { ReactNode } from "react";
 
 import LearningMaterial from "./LearningMaterial";
 
+/**
+ * Merepresentasikan modul pembelajaran di dalam aplikasi,
+ * memuat id, judul, deksripsi, serta list materi
+ */
 class LearningModule {
     protected _id: string;
     protected _title: string;
@@ -12,12 +16,19 @@ class LearningModule {
     protected _countMaterials: number
     public icon: ReactNode;
 
+    /**
+     * @param id - nilai unik dari modul, misal 'word' atau 'letter'
+     * @param title - judul dari modul
+     * @param description - deskripsi yang menjelaskan modul
+     * @param materials - list materi yang ada di dalam modul untuk dipelajari
+     * @param icon - komponen React sebagai icon ketika di render
+     */
     constructor(
-        id: string = '',
-        title: string = '',
-        description: string = '',
-        materials: LearningMaterial[] = [],
-        icon: ReactNode = null
+        id: string,
+        title: string,
+        description: string,
+        materials: LearningMaterial[],
+        icon: ReactNode
     ) {
         this._id = id;
         this._title = title;
@@ -44,6 +55,12 @@ class LearningModule {
     get countMaterials() { return this._countMaterials }
     set countMaterials(value: number) { this._countMaterials = value }
 
+    /**
+     * Meng-copy materi
+     * dipakai agar framework bisa melakukan render ketika update terjadi
+     * 
+     * @returns LearningMaterial
+     */
     clone(): LearningModule {
         const clonedMaterials = this.materials.map(m => m.clone());
         return new LearningModule(
