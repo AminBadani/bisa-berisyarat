@@ -80,10 +80,6 @@ function Belajar() {
     });
   }, [])
 
-  if (listModul.length == 0) return null;
-
-  
-  console.log(listModul)
   return (
     <div className="container mx-auto pt-8">
 
@@ -146,7 +142,7 @@ function Belajar() {
                 </div>
 
                 <div className="p-6 bg-linear-to-br from-yellow-50 to-orange-50 border-2 shadow-lg border-white h-fit">
-                  <h2 className="text-gray-800 ">📈 Grafik Perkembangan Skor Kuis</h2>
+                  <h2 className="text-gray-800 mb-6">📈 Grafik Perkembangan Skor Kuis</h2>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" />
