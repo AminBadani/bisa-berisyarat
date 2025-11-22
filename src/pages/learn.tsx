@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { FaBook, FaComment, FaTrophy, FaCheckCircle } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useModulStore } from "../store/modulStore";
 
 import Card from "../components/Card"
 import LearningModule from "../models/LearningModule"
 import LearningMaterial from "../models/LearningMaterial";
-
-import alphabet from "../data/alphabet.json";
-import word from "../data/word.json";
 import AlphabetModule from "../models/modules/AlphabetModule";
 import WordModule from "../models/modules/WordModule";
-import { useModulStore } from "../store/modulStore";
+
+import letter from "../data/letter.json";
+import word from "../data/word.json";
 
 function Learn() {
-  const alphabetImages: Record<string, string> = import.meta.glob('../assets/alphabet/*.png', { eager: true, import: 'default' });
+  
+  const letterImages: Record<string, string> = import.meta.glob('../assets/letter/*.png', { eager: true, import: 'default' });
 
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
@@ -45,7 +46,7 @@ function Learn() {
 
     const updated = selectedModule.clone();
     updated.materials = selectedModule.materials.map(m => m.clone());
-    updated.materials[materialIndex].changeFinished(updated.id, true);
+    updated.materials[materialIndex].changeFinishedTrue(updated.id);
 
     // Update local state
     setSelectedModule(updated);
@@ -55,14 +56,14 @@ function Learn() {
   }
 
   useEffect(() => {
-    window.api.getModule("alphabet").then(result => {
-      const alphabetModule = new AlphabetModule('alphabet', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
-        alphabet.map(item =>
+    window.api.getModule("letter").then(result => {
+      const letterModule = new AlphabetModule('letter', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
+        letter.map(item =>
           new LearningMaterial(
             item.letter,
             item.description,
             result.finished.includes(item.letter),
-            alphabetImages[`../assets/alphabet/${item.letter}.png`],
+            letterImages[`../assets/letter/${item.letter}.png`],
             '')
         ),
         <FaBook className="text-white w-6 h-6" />
@@ -80,7 +81,7 @@ function Learn() {
         <FaComment className="text-white  w-6 h-6" />
       );
 
-      setModules([alphabetModule, wordModule ]);
+      setModules([letterModule, wordModule ]);
     });
   }, [])
 
