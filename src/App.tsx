@@ -1,6 +1,8 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
-import Belajar from './pages/belajar'
+
 import Navbar from './components/Navbar'
+import Belajar from './pages/belajar'
+import Kuis from './pages/kuis'
 import Perkembangan from './pages/perkembangan'
 
 function App() {
@@ -11,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/belajar" replace />} />
           <Route path="/belajar" element={<Belajar />} />
-          <Route path="/kuis" element={<>Kuis</>} />
+          <Route path="/kuis" element={<Kuis />} />
           <Route path="/perkembangan" element={<Perkembangan />} />
         </Routes>
       </HashRouter>
