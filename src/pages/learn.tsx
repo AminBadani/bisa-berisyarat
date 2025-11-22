@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 import { FaBook, FaComment, FaTrophy, FaCheckCircle } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { useListModul } from "../contexts/ModulContext";
 
 import Card from "../components/Card"
-import Modul from "../models/Modul"
-import Materi from "../models/Materi";
+import LearningModule from "../models/LearningModule"
+import LearningMaterial from "../models/LearningMaterial";
 
-import huruf from "../data/huruf.json";
-import kata from "../data/kata.json";
+import alphabet from "../data/alphabet.json";
+import word from "../data/word.json";
+import AlphabetModule from "../models/modules/AlphabetModule";
+import WordModule from "../models/modules/WordModule";
+import { useModulStore } from "../store/modulStore";
 
-function Belajar() {
-  const letterImages: Record<string, string> = import.meta.glob('../assets/huruf/*.png', { eager: true, import: 'default' });
+function Learn() {
+  const alphabetImages: Record<string, string> = import.meta.glob('../assets/alphabet/*.png', { eager: true, import: 'default' });
 
-  const [selectedModul, setSelectedModul] = useState<Modul | null>(null);
+  const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
-  const { listModul, setListModul } = useListModul();
 
-  const currentItem = selectedModul?.materi[currentLearningIndex || 0];
+  const modules = useModulStore(s => s.modules);
+  const setModules = useModulStore(s => s.setModules);
+
+  const currentModule = selectedModule?.materials[currentLearningIndex || 0];
 
   const chartData = [
     {
@@ -34,50 +38,49 @@ function Belajar() {
     },
   ]
 
-  function selesaiDipelajari(materiIndex: number) {
-    setListModul(previousModul => {
-      return previousModul?.map(m => {
-        if (m === selectedModul) {
-          const updated = m.clone();
-          updated.materi = [...updated.materi];
-          updated.materi[materiIndex].ubahSelesai(updated.getId, true);
+  function doneLearned(materialIndex: number) {
+    if (!selectedModule) return;
 
-          setSelectedModul(updated);
+    const updateModul = useModulStore.getState().updateModule;
 
-          return updated;
-        }
-        return m;
-      });
-    });
+    const updated = selectedModule.clone();
+    updated.materials = selectedModule.materials.map(m => m.clone());
+    updated.materials[materialIndex].changeFinished(updated.id, true);
+
+    // Update local state
+    setSelectedModule(updated);
+
+    // Update in global Zustand store
+    updateModul(updated.id, updated);
   }
 
   useEffect(() => {
-    window.api.getModule("huruf").then(result => {
-      const modulHuruf = new Modul('huruf', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
-          huruf.map(item =>
-            new Materi(
-              item.huruf,
-              item.deskripsi,
-              result.finished.includes(item.huruf),
-              letterImages[`../assets/huruf/${item.huruf}.png`] as string,
-              '')
-          ),
-          <FaBook className="text-white w-6 h-6" />
-        )
+    window.api.getModule("alphabet").then(result => {
+      const alphabetModule = new AlphabetModule('alphabet', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
+        alphabet.map(item =>
+          new LearningMaterial(
+            item.letter,
+            item.description,
+            result.finished.includes(item.letter),
+            alphabetImages[`../assets/alphabet/${item.letter}.png`],
+            '')
+        ),
+        <FaBook className="text-white w-6 h-6" />
+      )
 
-      const modulKata = new Modul('kata', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
-          kata.map(item =>
-            new Materi(
-              item.kata,
-              item.deskripsi,
-              false,
-              '',
-              '')
-          ),
-          <FaComment className="text-white  w-6 h-6" />
-        );
+      const wordModule = new WordModule('word', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
+        word.map(item =>
+          new LearningMaterial(
+            item.word,
+            item.description,
+            false,
+            '',
+            '')
+        ),
+        <FaComment className="text-white  w-6 h-6" />
+      );
 
-        setListModul([modulHuruf, modulKata]);
+      setModules([alphabetModule, wordModule ]);
     });
   }, [])
 
@@ -85,7 +88,7 @@ function Belajar() {
     <div className="container mx-auto pt-8">
 
       {
-        !selectedModul ? (
+        !selectedModule ? (
           <>
             <header className="mb-8 text-center">
               <h1 className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">✨ Halaman Belajar ✨</h1>
@@ -95,22 +98,22 @@ function Belajar() {
             <div className="grid grid-cols-[40%_57%] gap-10">
               <div className="grid grid-cols-1 gap-2">
                 <Card
-                  key={listModul[0]?.getId}
-                  judul={listModul[0]?.getJudul}
-                  deskripsi={listModul[0]?.getDeskripsi}
-                  selesai={listModul[0]?.getJumlahSelesai}
-                  jumlah={listModul[0]?.getJumlahPelajaran}
-                  icon={listModul[0]?.icon}
-                  onClick={() => { setSelectedModul(listModul[0]); }}
+                  key={modules[0]?.id}
+                  judul={modules[0]?.title}
+                  deskripsi={modules[0]?.description}
+                  selesai={modules[0]?.countFinished}
+                  jumlah={modules[0]?.countMaterials}
+                  icon={modules[0]?.icon}
+                  onClick={() => { setSelectedModule(modules[0]); }}
                 />
                 <Card
-                  key={listModul[1]?.getId}
-                  judul={listModul[1]?.getJudul}
-                  deskripsi={listModul[1]?.getDeskripsi}
-                  selesai={listModul[1]?.getJumlahSelesai}
-                  jumlah={listModul[1]?.getJumlahPelajaran}
-                  icon={listModul[1]?.icon}
-                  onClick={() => { setSelectedModul(listModul[1]); }}
+                  key={modules[1]?.id}
+                  judul={modules[1]?.title}
+                  deskripsi={modules[1]?.description}
+                  selesai={modules[1]?.countFinished}
+                  jumlah={modules[1]?.countMaterials}
+                  icon={modules[1]?.icon}
+                  onClick={() => { setSelectedModule(modules[1]); }}
                 />
               </div>
 
@@ -124,7 +127,7 @@ function Belajar() {
                       </div>
                       <div>
                         <p className="text-gray-700">Item dipelajari</p>
-                        <p className="text-gray-800">{listModul[0]?.getJumlahSelesai + listModul[1]?.getJumlahSelesai} / {listModul[0]?.getJumlahPelajaran + listModul[1]?.getJumlahPelajaran}</p>
+                        <p className="text-gray-800">{modules[0]?.countFinished + modules[1]?.countFinished} / {modules[0]?.countMaterials + modules[1]?.countMaterials}</p>
                       </div>
                     </div>
                   </div>
@@ -136,7 +139,7 @@ function Belajar() {
                       </div>
                       <div>
                         <p className="text-gray-700">Progress belajar</p>
-                        <p className="text-gray-800">{Math.round((listModul[0]?.getJumlahSelesai + listModul[1]?.getJumlahSelesai) / (listModul[0]?.getJumlahPelajaran + listModul[1]?.getJumlahPelajaran) * 100)}%</p>
+                        <p className="text-gray-800">{Math.round((modules[0]?.countFinished + modules[1]?.countFinished) / (modules[0]?.countMaterials + modules[1]?.countMaterials) * 100)}%</p>
                       </div>
                     </div>
                   </div>
@@ -201,13 +204,13 @@ function Belajar() {
                       <div className="mb-4">
                         <div className="p-4 rounded-2xl shadow-2xl border-4 border-white relative">
                           <img
-                            src={currentItem?.getGambar}
-                            alt={`Bahasa isyarat untuk ${currentItem?.getId}`}
+                            src={currentModule?.image}
+                            alt={`Bahasa isyarat untuk ${currentModule?.id}`}
                             className="w-64 h-64 object-contain rounded-xl"
                           />
                           <div className={`absolute -top-3 -right-3 px-4 py-2 rounded-full bg-linear-to-br from-yellow-50 to-orange-50 text-white shadow-lg`}>
                             <span className="text-xl text-black">
-                              {currentItem?.getId.toUpperCase()}
+                              {currentModule?.id.toUpperCase()}
                             </span>
                           </div>
                         </div>
@@ -220,10 +223,10 @@ function Belajar() {
               <div className="mt-20">
                 <div className="mb-8 text-center">
                   <h2 className="text-gray-800 mb-2">
-                    ⭐ Huruf {currentItem?.getId.toUpperCase()} ⭐
+                    ⭐ Huruf {currentModule?.id.toUpperCase()} ⭐
                   </h2>
                   <p className="text-gray-700">
-                    {currentItem?.getDeskripsi}
+                    {currentModule?.description}
                   </p>
                 </div>
               </div>
@@ -231,21 +234,21 @@ function Belajar() {
 
             <div className="grid grid-cols-2 gap-10 items-center">
               <div className="mt-6">
-                <progress max={selectedModul.getJumlahPelajaran} value={selectedModul.getJumlahSelesai} className="rounded-full overflow-hidden w-full h-5
+                <progress max={selectedModule.countMaterials} value={selectedModule.countFinished} className="rounded-full overflow-hidden w-full h-5
                   bg-gray-300
                   [&::-webkit-progress-bar]:bg-gray-300
                   [&::-webkit-progress-value]:bg-gray-800
                   [&::-moz-progress-bar]:bg-gray-800"></progress>
                 <p className="text-center mt-2 text-gray-700">
-                  🚀 Kamu sudah belajar {selectedModul.getJumlahSelesai} dari {selectedModul.getJumlahPelajaran} item!
+                  🚀 Kamu sudah belajar {selectedModule.countFinished} dari {selectedModule.countMaterials} item!
                 </p>
               </div>
 
               <div className="flex gap-4 justify-center">
                 <button
                   onClick={() => {
+                    doneLearned(currentLearningIndex - 1);
                     setCurrentLearningIndex(() => currentLearningIndex - 1)
-                    selesaiDipelajari(currentLearningIndex - 1);
                   }}
                   disabled={currentLearningIndex === 0}
                   aria-label="Item sebelumnya"
@@ -255,18 +258,18 @@ function Belajar() {
                 </button>
                 <button
                   onClick={() => {
+                    doneLearned(currentLearningIndex + 1);
                     setCurrentLearningIndex(() => currentLearningIndex + 1)
-                    selesaiDipelajari(currentLearningIndex + 1);
                   }}
-                  disabled={currentLearningIndex >= ((selectedModul?.materi?.length ?? 0) - 1)}
+                  disabled={currentLearningIndex >= ((selectedModule?.materials?.length ?? 0) - 1)}
                   className="bg-white text-black border-0 not-disabled:hover:scale-110 transition-transform shadow-lg h-fit px-5 py-2 rounded-md disabled:opacity-30"
                   aria-label={
-                    currentLearningIndex === ((selectedModul?.materi?.length ?? 0) - 1)
+                    currentLearningIndex === ((selectedModule?.materials?.length ?? 0) - 1)
                       ? 'Selesai'
                       : 'Selanjutnya'
                   }
                 >
-                  {currentLearningIndex === ((selectedModul?.materi?.length ?? 0) - 1)
+                  {currentLearningIndex === ((selectedModule?.materials?.length ?? 0) - 1)
                     ? '🎊 Selesai'
                     : 'Selanjutnya ➡️'}
                 </button>
@@ -276,7 +279,7 @@ function Belajar() {
         ) : (
           <>
             <button
-              onClick={() => { setCurrentLearningIndex(null); setSelectedModul(null) }}
+              onClick={() => { setCurrentLearningIndex(null); setSelectedModule(null) }}
               className="hover:scale-105 hover:bg-gray-100 transition-transform px-5 py-2 bg-white text-black"
               aria-label="Kembali ke halaman utama"
             >
@@ -285,36 +288,36 @@ function Belajar() {
 
             <header className="mb-6 text-center">
               <h1 className={`bg-gray-700 bg-clip-text text-transparent mb-2`}>
-                {selectedModul?.getJudul}
+                {selectedModule?.title}
               </h1>
-              <p className="text-gray-700">{selectedModul?.getDeskripsi}</p>
+              <p className="text-gray-700">{selectedModule?.description}</p>
               <div className="mt-4 max-w-md mx-auto">
-                <progress max={selectedModul.getJumlahPelajaran} value={selectedModul.getJumlahSelesai} className="rounded-full overflow-hidden w-full h-3
+                <progress max={selectedModule.countMaterials} value={selectedModule.countFinished} className="rounded-full overflow-hidden w-full h-3
                   bg-gray-300
                   [&::-webkit-progress-bar]:bg-gray-300
                   [&::-webkit-progress-value]:bg-gray-800
                   [&::-moz-progress-bar]:bg-gray-800"></progress>
                 <p className="text-center mt-2 text-gray-700">
-                  🎯 Progress: {selectedModul.getJumlahSelesai} / {selectedModul.getJumlahPelajaran}
+                  🎯 Progress: {selectedModule.countFinished} / {selectedModule.countMaterials}
                 </p>
               </div>
             </header>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-6">
-              {selectedModul?.materi.map((item, index) => {
+              {selectedModule?.materials.map((item, index) => {
                 const colors = ['from-pink-200 to-rose-200', 'from-blue-200 to-cyan-200', 'from-purple-200 to-indigo-200', 'from-orange-200 to-yellow-200', 'from-green-200 to-emerald-200'];
                 const bgColor = colors[index % colors.length];
 
                 return (
-                  <div key={item.getId} >
+                  <div key={item.id} >
                     <div
-                      className={`relative p-4 cursor-pointer border-2 h-fit rounded-xl border-gray-300  hover:shadow-2xs hover:scale-90 transition-all bg-linear-to-br ${bgColor} ${item.getSelesai ? 'ring-4 ring-green-400 shadow-green-200' : 'hover:border-white'}`}
+                      className={`relative p-4 cursor-pointer border-2 h-fit rounded-xl border-gray-300  hover:shadow-2xs hover:scale-90 transition-all bg-linear-to-br ${bgColor} ${item.isLearned ? 'ring-4 ring-green-400 shadow-green-200' : 'hover:border-white'}`}
                       onClick={() => {
-                        setCurrentLearningIndex(index);
-                        selesaiDipelajari(index)
+                        doneLearned(index)
+                        setCurrentLearningIndex(() => index);
                       }}
                     >
-                      {item.getSelesai && (
+                      {item.isLearned && (
                         <div
                           className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1 shadow-lg"
                         >
@@ -327,12 +330,12 @@ function Belajar() {
                       <div className="flex flex-col items-center justify-center text-center h-32">
                         <div className="mb-2">
                           <img
-                            src={item.getGambar}
-                            alt={`Isyarat ${item.getId}`}
+                            src={item.image}
+                            alt={`Isyarat ${item.id}`}
                             className="w-32 h-32 object-cover rounded-lg"
                           />
                         </div>
-                        <p className="text-gray-800">{item.getId.toUpperCase()}</p>
+                        <p className="text-gray-800">{item.id.toUpperCase()}</p>
                       </div>
                     </div>
                   </div>
@@ -346,4 +349,4 @@ function Belajar() {
   )
 }
 
-export default Belajar;
+export default Learn;
