@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { FaTrophy } from "react-icons/fa";
 
 import Radio from "../components/Radio";
-import Soal from "../models/Soal";
+import Question from "../models/Question";
 
-function Kuis() {
-  const letterImages: Record<string, string> = import.meta.glob('../assets/huruf/*.png', { eager: true, import: 'default' });
+function Quiz() {
+  const alphabetImages: Record<string, string> = import.meta.glob('../assets/alphabet/*.png', { eager: true, import: 'default' });
 
   const [quizStarted, setQuizStarted] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [listQuestion, setListQuestion] = useState<Soal[]>([]);
+  const [listQuestion, setListQuestion] = useState<Question[]>([]);
 
-  const tipeSoal = ['pilih-huruf', 'pilih-gambar']
+  const questionType = ['choose-letter', 'choose-images']
 
   const question = listQuestion[currentQuestion];
   const progress = ((currentQuestion + 1) / listQuestion.length) * 100;
@@ -37,41 +37,37 @@ function Kuis() {
   }
 
   useEffect(() => {
-    window.api.getModule('huruf').then((result) => {
+    window.api.getModule('alphabet').then((result) => {
       setListQuestion(
         Array.from({ length: 5 }, (_, index) => {
-          const tipe = tipeSoal[Math.round(Math.random())]
+          const tipe = questionType[Math.round(Math.random())]
           const soal = result.finished[Math.floor(Math.random() * result.finished.length)]
           let opsi = Array.from({ length: 4 }, (_, index) => {
             const abjad = getRandomLetters(4);
 
-            return {
-              abjad: abjad[index],
-              isi: tipe == 'pilih-huruf'
+            return tipe == 'choose-letter'
                 ? abjad[index]
-                : letterImages[`../assets/huruf/${abjad[index]}.png`],
-            }
+                : alphabetImages[`../assets/alphabet/${abjad[index]}.png`]
+            
           })
 
-          if (!opsi.some(item => item.abjad == soal)) {
+          if (!opsi.some(item => item == soal)) {
             const random4 = Math.floor(Math.floor(Math.random() * 4));
             opsi = opsi.map((item, index) => {
               return index == random4
-                ? {
-                  abjad: soal, isi: tipe == 'pilih-huruf'
+                ? tipe == 'choose-letter'
                     ? soal
-                    : letterImages[`../assets/huruf/${soal}.png`]
-                }
+                    : alphabetImages[`../assets/alphabet/${soal}.png`]
                 : item;
             })
           }
 
-          return new Soal(index + 1,
+          return new Question(index + 1,
             tipe,
-            tipe == 'pilih-huruf' ? letterImages[`../assets/huruf/${soal}.png`] : soal,
-            `Pililah ${tipe == 'pilih-huruf' ? 'huruf' : 'gambar'} yang sesuai dengan ${tipe == 'pilih-huruf' ? 'gambar' : 'huruf'} yang ditampilkan`,
+            tipe == 'choose-letter' ? alphabetImages[`../assets/alphabet/${soal}.png`] : soal,
+            `Pililah ${tipe == 'choose-letter' ? 'huruf' : 'gambar'} yang sesuai dengan ${tipe == 'choose-letter' ? 'gambar' : 'huruf'} yang ditampilkan`,
             opsi,
-            opsi.findIndex(item => item.abjad == soal)
+            opsi.findIndex(item => item == soal)
           )
         })
       )
@@ -128,26 +124,26 @@ function Kuis() {
 
           <div className="p-8 bg-linear-to-br from-blue-50 to-purple-50 border-4 shadow-xl bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-gray-300">
             {
-              (question.getTipe == 'pilih-huruf') ?
+              (question.type == 'choose-letter') ?
                 (
                   <img
-                    src={question.getSoal}
+                    src={question.question}
                     className="w-64 h-64 object-contain rounded-xl"
                   />
                 ) : (
                   <div className="content-center text-center font-bold text-[10rem] text-gray-900 w-64 h-64">
-                    {question.getSoal.toUpperCase()}
+                    {question.question.toUpperCase()}
                   </div>
                 )
             }
           </div>
 
           <div className="flex flex-col">
-            <h2 className="text-gray-800 mb-6">❓ {question.getDeskripsi}</h2>
+            <h2 className="text-gray-800 mb-6">❓ {question.description}</h2>
             <ul className="select-none grid gap-4 grid-cols-2">
-              {question.getOpsi.map((item, index) => {
+              {question.options.map((item, index) => {
                 return (
-                  <Radio key={index} value={item['isi']} label={item['isi']} tipe={question.getTipe} checked={selectedAnswers[question.getId] == item['isi']} onChange={() => handleAnswerSelect(question.getId, item['isi'])} />
+                  <Radio key={index} value={item} label={item} tipe={question.type} checked={selectedAnswers[question.id] == item} onChange={() => handleAnswerSelect(question.id, item)} />
                 )
               })}
             </ul>
@@ -177,4 +173,4 @@ function Kuis() {
   )
 }
 
-export default Kuis;
+export default Quiz;
