@@ -4,7 +4,7 @@ class Materi {
     protected selesai: boolean = false;
     protected gambar: string;
     protected suara: string;
-    
+
     constructor();
     constructor(
         id: string,
@@ -32,15 +32,20 @@ class Materi {
 
     get getDeskripsi() { return this.deskripsi }
     set setDeskripsi(value: string) { this.deskripsi = value }
-    
+
     get getGambar() { return this.gambar }
     set setGambar(value: string) { this.gambar = value }
-    
+
     get getSuara() { return this.suara }
     set setSuara(value: string) { this.suara = value }
 
     get getSelesai() { return this.selesai }
     set setSelesai(value: boolean) { this.selesai = value }
+
+    ubahSelesai(key: string, value: boolean) {
+        this.selesai = value;
+        window.api.addFinished(key, this.id);
+    }
 }
 
 export default Materi
