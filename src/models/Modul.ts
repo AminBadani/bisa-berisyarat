@@ -51,12 +51,8 @@ class Modul {
     get getJumlahPelajaran() { return this.jumlahPelajaran }
     set setJumlahPelajaran(value: number) { this.jumlahPelajaran = value }
 
-    materiSelesai(id: string) {
-        const materi = this.materi.find(a => a.getId === id);
-        if (materi) {
-            materi.setSelesai = true;
-            window.api.addFinished(this.id, id);
-        }
+    clone(): Modul {
+        return new Modul(this.id, this.judul, this.deskripsi, this.materi, this.icon)
     }
 }
 
