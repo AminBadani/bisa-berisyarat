@@ -24,11 +24,14 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 })
 
 contextBridge.exposeInMainWorld("api", {
+  get: (key: string) => ipcRenderer.invoke("store:get", key),
+
   getModule: (learnKey: string) => ipcRenderer.invoke("store:module:get", learnKey),
   addFinished: (learnKey: string, item: any) => ipcRenderer.invoke("store:finished:add", learnKey, item),
   removeFinished: (learnKey: string, item: any) => ipcRenderer.invoke("store:finished:remove", learnKey, item),
   clearFinished: () => ipcRenderer.invoke("store:finished:clear"),
-
+  
+  getQuiz: () => ipcRenderer.invoke("store:quiz:get"),
   addQuiz: (item: any) => ipcRenderer.invoke("store:quiz:add", item),
   removeQuiz: (date: string) => ipcRenderer.invoke("store:quix:remove", date),
   clearQuiz: () => ipcRenderer.invoke("store:finished:clear"),

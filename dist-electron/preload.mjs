@@ -21,10 +21,12 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // ...
 });
 electron.contextBridge.exposeInMainWorld("api", {
+  get: (key) => electron.ipcRenderer.invoke("store:get", key),
   getModule: (learnKey) => electron.ipcRenderer.invoke("store:module:get", learnKey),
   addFinished: (learnKey, item) => electron.ipcRenderer.invoke("store:finished:add", learnKey, item),
   removeFinished: (learnKey, item) => electron.ipcRenderer.invoke("store:finished:remove", learnKey, item),
   clearFinished: () => electron.ipcRenderer.invoke("store:finished:clear"),
+  getQuiz: () => electron.ipcRenderer.invoke("store:quiz:get"),
   addQuiz: (item) => electron.ipcRenderer.invoke("store:quiz:add", item),
   removeQuiz: (date) => electron.ipcRenderer.invoke("store:quix:remove", date),
   clearQuiz: () => electron.ipcRenderer.invoke("store:finished:clear")

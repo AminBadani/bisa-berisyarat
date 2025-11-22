@@ -69,6 +69,11 @@ app.on('activate', () => {
   }
 })
 
+ipcMain.handle("store:get", (_, key) => {
+  const storage = store.get(key) || {};
+  return storage;
+});
+
 ipcMain.handle("store:module:get", (_, learnKey) => {
   const modules = store.get("module") || [];
   const mod = modules.find(m => m.learn === learnKey)
@@ -113,6 +118,11 @@ ipcMain.handle("store:finished:clear", () => {
 
   store.set("module", updated);
   return updated;
+});
+
+ipcMain.handle("store:quiz:get", () => {
+  const modules = store.get("quiz") || [];
+  return modules;
 });
 
 ipcMain.handle("store:quiz:add", (_, item) => {
