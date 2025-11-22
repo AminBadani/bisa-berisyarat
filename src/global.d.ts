@@ -9,13 +9,14 @@ declare global {
       invoke: (...args: any[]) => Promise<any>
     }
     api: {
-      get: (key: string) => Promise<any>
-      set: (key: string, value: string | number) => Promise<any>
-      addFinished: (key: string, value: string | number) => Promise<any>
+      getModule: (learnKey: string) => Promise<any>
+      addFinished: (key: string, value: any | number) => Promise<any>
       removeFinished: (key: string, value: string | number) => Promise<any>
       clearFinished: () => Promise<any>
 
-      getModule: (learnKey: string) => Promise<any>
+      addQuiz: (value: any) => Promise<any>
+      removeQuiz: (date: string) => Promise<any>
+      clearQuiz: () => Promise<any>
     }
   }
 }
