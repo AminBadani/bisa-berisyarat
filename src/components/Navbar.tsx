@@ -4,9 +4,9 @@ import { Link, useLocation } from "react-router";
 function Navbar() {
   const location = useLocation()
   const menuItems = [
-    { path: '/belajar', label: 'Belajar' },
-    { path: '/kuis', label: 'Kuis' },
-    { path: '/perkembangan', label: 'Perkembangan' },
+    { path: '/learn', label: 'Belajar' },
+    { path: '/quiz', label: 'Kuis' },
+    { path: '/progress', label: 'Perkembangan' },
   ];
 
   return (
