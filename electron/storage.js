@@ -12,7 +12,8 @@ const store = new Store({
         learn: 'angka',
         finished: []
       }
-    ]
+    ],
+    quiz: []
   }
 });
 
