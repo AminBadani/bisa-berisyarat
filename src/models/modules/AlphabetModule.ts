@@ -20,7 +20,7 @@ class AlphabetModule extends LearningModule {
         materials: LearningMaterial[] = [],
         icon: ReactNode = null
     ) {
-        super('word', title, description, materials, icon)
+        super('letter', title, description, materials, icon)
     }
 }
 
