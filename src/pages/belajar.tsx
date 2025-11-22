@@ -7,36 +7,14 @@ import Modul from "../models/Modul"
 import Materi from "../models/Materi";
 
 import huruf from "../data/huruf.json";
+import kata from "../data/kata.json";
 
 function Belajar() {
-  const [selectedModul, setSelectedModul] = useState<Modul | null>(null);
-  const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
-  const [finishedLetter, setFinishedLetter] = useState<string[]>([]);
-
   const letterImages: Record<string, string> = import.meta.glob('../assets/huruf/*.png', { eager: true, import: 'default' });
 
-  const modulHuruf = new Modul(
-    'huruf',
-    'Belajar huruf',
-    'Pelajari isyarat untuk huruf A-Z',
-    huruf.map(item =>
-      new Materi(
-        item.huruf,
-        item.deskripsi,
-        finishedLetter.includes(item.huruf),
-        letterImages[`../assets/huruf/${item.huruf}.png`] as string,
-        '')
-    ),
-    <FaBook className="text-white w-6 h-6" />
-  );
-
-  const modulKata = new Modul(
-    'kata',
-    'Belajar kata',
-    'Pelajari kata dasar yang digunakan sehari-hari',
-    [],
-    <FaComment className="text-white  w-6 h-6" />
-  );
+  const [selectedModul, setSelectedModul] = useState<Modul | null>(null);
+  const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
+  const [listModul, setListModul] = useState<Modul[]>([])
 
   const currentItem = selectedModul?.materi[currentLearningIndex || 0];
 
@@ -55,11 +33,57 @@ function Belajar() {
     },
   ]
 
+  function selesaiDipelajari(materiIndex: number) {
+    setListModul(previousModul => {
+      return previousModul?.map(m => {
+        if (m === selectedModul) {
+          const updated = m.clone();
+          updated.materi = [...updated.materi];
+          updated.materi[materiIndex].ubahSelesai(updated.getId, true);
+
+          setSelectedModul(updated);
+
+          return updated;
+        }
+        return m;
+      });
+    });
+  }
+
   useEffect(() => {
     window.api.getModule("huruf").then(result => {
-      setFinishedLetter(result.finished)
+      setListModul([
+        new Modul('huruf', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
+          huruf.map(item =>
+            new Materi(
+              item.huruf,
+              item.deskripsi,
+              result.finished.includes(item.huruf),
+              letterImages[`../assets/huruf/${item.huruf}.png`] as string,
+              '')
+          ),
+          <FaBook className="text-white w-6 h-6" />
+        ),
+        new Modul('kata', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
+          kata.map(item =>
+            new Materi(
+              item.kata,
+              item.deskripsi,
+              false,
+              '',
+              '')
+          ),
+          <FaComment className="text-white  w-6 h-6" />
+        )
+      ])
+      console.log(listModul);
     });
   }, [])
+
+  if (listModul.length == 0) return null;
+
+  
+  console.log(listModul)
   return (
     <div className="container mx-auto pt-8">
 
@@ -73,24 +97,24 @@ function Belajar() {
 
             <div className="grid grid-cols-[40%_57%] gap-10">
               <div className="grid grid-cols-1 gap-2">
-                  <Card
-                    key={modulHuruf.getId}
-                    judul={modulHuruf.getJudul}
-                    deskripsi={modulHuruf.getDeskripsi}
-                    selesai={modulHuruf.getJumlahSelesai}
-                    jumlah={modulHuruf.getJumlahPelajaran}
-                    icon={modulHuruf.icon}
-                    onClick={() => { setSelectedModul(modulHuruf); }}
-                  />
-                  <Card
-                    key={modulKata.getId}
-                    judul={modulKata.getJudul}
-                    deskripsi={modulKata.getDeskripsi}
-                    selesai={modulKata.getJumlahSelesai}
-                    jumlah={modulKata.getJumlahPelajaran}
-                    icon={modulKata.icon}
-                    onClick={() => { setSelectedModul(modulKata); }}
-                  />
+                <Card
+                  key={listModul[0]?.getId}
+                  judul={listModul[0]?.getJudul}
+                  deskripsi={listModul[0]?.getDeskripsi}
+                  selesai={listModul[0]?.getJumlahSelesai}
+                  jumlah={listModul[0]?.getJumlahPelajaran}
+                  icon={listModul[0]?.icon}
+                  onClick={() => { setSelectedModul(listModul[0]); }}
+                />
+                <Card
+                  key={listModul[1]?.getId}
+                  judul={listModul[1]?.getJudul}
+                  deskripsi={listModul[1]?.getDeskripsi}
+                  selesai={listModul[1]?.getJumlahSelesai}
+                  jumlah={listModul[1]?.getJumlahPelajaran}
+                  icon={listModul[1]?.icon}
+                  onClick={() => { setSelectedModul(listModul[1]); }}
+                />
               </div>
 
               <div className="grid  gap-y-6">
@@ -103,7 +127,7 @@ function Belajar() {
                       </div>
                       <div>
                         <p className="text-gray-700">Item dipelajari</p>
-                        <p className="text-gray-800">1 / 50</p>
+                        <p className="text-gray-800">{listModul[0]?.getJumlahSelesai + listModul[1]?.getJumlahSelesai} / {listModul[0]?.getJumlahPelajaran + listModul[1]?.getJumlahPelajaran}</p>
                       </div>
                     </div>
                   </div>
@@ -115,7 +139,7 @@ function Belajar() {
                       </div>
                       <div>
                         <p className="text-gray-700">Progress belajar</p>
-                        <p className="text-gray-800">25%</p>
+                        <p className="text-gray-800">{Math.round((listModul[0]?.getJumlahSelesai + listModul[1]?.getJumlahSelesai) / (listModul[0]?.getJumlahPelajaran + listModul[1]?.getJumlahPelajaran) * 100)}%</p>
                       </div>
                     </div>
                   </div>
@@ -168,7 +192,7 @@ function Belajar() {
                 <button
                   onClick={() => { setCurrentLearningIndex(null) }}
                   className="hover:scale-105 hover:bg-gray-100 transition-transform px-5 py-2 bg-white text-black"
-                  aria-label="Kembali ke halaman utama" 
+                  aria-label="Kembali ke halaman utama"
                 >
                   ← Kembali ke Daftar
                 </button>
@@ -196,7 +220,7 @@ function Belajar() {
                 </div>
               </div>
 
-              <div className="mt-10">
+              <div className="mt-20">
                 <div className="mb-8 text-center">
                   <h2 className="text-gray-800 mb-2">
                     ⭐ Huruf {currentItem?.getId.toUpperCase()} ⭐
@@ -208,21 +232,24 @@ function Belajar() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-10">
+            <div className="grid grid-cols-2 gap-10 items-center">
               <div className="mt-6">
-                <progress max={26} value={1} className="rounded-full overflow-hidden w-full h-5
+                <progress max={selectedModul.getJumlahPelajaran} value={selectedModul.getJumlahSelesai} className="rounded-full overflow-hidden w-full h-5
                   bg-gray-300
                   [&::-webkit-progress-bar]:bg-gray-300
                   [&::-webkit-progress-value]:bg-gray-800
                   [&::-moz-progress-bar]:bg-gray-800"></progress>
                 <p className="text-center mt-2 text-gray-700">
-                  🚀 Kamu sudah belajar {currentLearningIndex + 1} dari {selectedModul?.materi?.length} item!
+                  🚀 Kamu sudah belajar {selectedModul.getJumlahSelesai} dari {selectedModul.getJumlahPelajaran} item!
                 </p>
               </div>
 
               <div className="flex gap-4 justify-center">
                 <button
-                  onClick={() => setCurrentLearningIndex(() => currentLearningIndex - 1)}
+                  onClick={() => {
+                    setCurrentLearningIndex(() => currentLearningIndex - 1)
+                    selesaiDipelajari(currentLearningIndex - 1);
+                  }}
                   disabled={currentLearningIndex === 0}
                   aria-label="Item sebelumnya"
                   className="bg-white text-black border-0 not-disabled:hover:scale-110 transition-transform shadow-lg h-fit px-5 py-2 rounded-md disabled:opacity-30"
@@ -230,7 +257,10 @@ function Belajar() {
                   ⬅️ Sebelumnya
                 </button>
                 <button
-                  onClick={() => setCurrentLearningIndex(() => currentLearningIndex + 1)}
+                  onClick={() => {
+                    setCurrentLearningIndex(() => currentLearningIndex + 1)
+                    selesaiDipelajari(currentLearningIndex + 1);
+                  }}
                   disabled={currentLearningIndex >= ((selectedModul?.materi?.length ?? 0) - 1)}
                   className="bg-white text-black border-0 not-disabled:hover:scale-110 transition-transform shadow-lg h-fit px-5 py-2 rounded-md disabled:opacity-30"
                   aria-label={
@@ -249,12 +279,12 @@ function Belajar() {
         ) : (
           <>
             <button
-                  onClick={() => { setCurrentLearningIndex(null); setSelectedModul(null) }}
-                  className="hover:scale-105 hover:bg-gray-100 transition-transform px-5 py-2 bg-white text-black"
-                  aria-label="Kembali ke halaman utama" 
-                >
-                  ← Kembali ke Halaman Utama
-                </button>
+              onClick={() => { setCurrentLearningIndex(null); setSelectedModul(null) }}
+              className="hover:scale-105 hover:bg-gray-100 transition-transform px-5 py-2 bg-white text-black"
+              aria-label="Kembali ke halaman utama"
+            >
+              ← Kembali ke Halaman Utama
+            </button>
 
             <header className="mb-6 text-center">
               <h1 className={`bg-gray-700 bg-clip-text text-transparent mb-2`}>
@@ -262,21 +292,13 @@ function Belajar() {
               </h1>
               <p className="text-gray-700">{selectedModul?.getDeskripsi}</p>
               <div className="mt-4 max-w-md mx-auto">
-                {/* <Progress
-                  value={getModuleProgress(selectedModule!)}
-                  aria-label={`Progress modul: ${Math.round(getModuleProgress(selectedModule!))}%`}
-                  className="h-3 shadow-md"
-                />
-                <p className="text-gray-700 mt-2">
-                  🎯 Progress: {completedItems[selectedModule!]?.size || 0} / {selectedModul?.items.length}
-                </p> */}
-                <progress max={26} value={1} className="rounded-full overflow-hidden w-full h-3
+                <progress max={selectedModul.getJumlahPelajaran} value={selectedModul.getJumlahSelesai} className="rounded-full overflow-hidden w-full h-3
                   bg-gray-300
                   [&::-webkit-progress-bar]:bg-gray-300
                   [&::-webkit-progress-value]:bg-gray-800
                   [&::-moz-progress-bar]:bg-gray-800"></progress>
                 <p className="text-center mt-2 text-gray-700">
-                  🎯 Progress: 0 / 0
+                  🎯 Progress: {selectedModul.getJumlahSelesai} / {selectedModul.getJumlahPelajaran}
                 </p>
               </div>
             </header>
@@ -290,7 +312,10 @@ function Belajar() {
                   <div key={item.getId} >
                     <div
                       className={`relative p-4 cursor-pointer border-2 h-fit rounded-xl border-gray-300  hover:shadow-2xs hover:scale-90 transition-all bg-linear-to-br ${bgColor} ${item.getSelesai ? 'ring-4 ring-green-400 shadow-green-200' : 'hover:border-white'}`}
-                      onClick={() => { setCurrentLearningIndex(index); item.setSelesai = true; console.log(modulHuruf) }}
+                      onClick={() => {
+                        setCurrentLearningIndex(index);
+                        selesaiDipelajari(index)
+                      }}
                     >
                       {item.getSelesai && (
                         <div
