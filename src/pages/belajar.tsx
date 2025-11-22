@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaBook, FaComment, FaTrophy, FaCheckCircle } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useListModul } from "../contexts/ModulContext";
 
 import Card from "../components/Card"
 import Modul from "../models/Modul"
@@ -14,7 +15,7 @@ function Belajar() {
 
   const [selectedModul, setSelectedModul] = useState<Modul | null>(null);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
-  const [listModul, setListModul] = useState<Modul[]>([])
+  const { listModul, setListModul } = useListModul();
 
   const currentItem = selectedModul?.materi[currentLearningIndex || 0];
 
@@ -52,8 +53,7 @@ function Belajar() {
 
   useEffect(() => {
     window.api.getModule("huruf").then(result => {
-      setListModul([
-        new Modul('huruf', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
+      const modulHuruf = new Modul('huruf', 'Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
           huruf.map(item =>
             new Materi(
               item.huruf,
@@ -63,8 +63,9 @@ function Belajar() {
               '')
           ),
           <FaBook className="text-white w-6 h-6" />
-        ),
-        new Modul('kata', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
+        )
+
+      const modulKata = new Modul('kata', 'Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
           kata.map(item =>
             new Materi(
               item.kata,
@@ -74,9 +75,9 @@ function Belajar() {
               '')
           ),
           <FaComment className="text-white  w-6 h-6" />
-        )
-      ])
-      console.log(listModul);
+        );
+
+        setListModul([modulHuruf, modulKata]);
     });
   }, [])
 
@@ -113,7 +114,7 @@ function Belajar() {
                 />
               </div>
 
-              <div className="grid  gap-y-6">
+              <div className="grid gap-y-6">
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-3 border-2 shadow-lg bg-card text-card-foreground border-white bg-linear-to-br from-yellow-50 to-orange-50">

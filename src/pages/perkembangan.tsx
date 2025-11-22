@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { FaAward, FaChartLine, FaStar, FaTrophy } from "react-icons/fa";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useListModul } from "../contexts/ModulContext";
 
 function Perkembangan() {
   const [statistik, setStatistik] = useState('belajar');
+  const { listModul } = useListModul();
 
   const learningChartData = [
     {
@@ -52,7 +54,7 @@ function Perkembangan() {
             </div>
             <div>
               <p className="text-gray-700">Item Dipelajari</p>
-              <p className="text-gray-800">{1} / {10}</p>
+              <p className="text-gray-800">{listModul[0].getJumlahSelesai + listModul[1].getJumlahSelesai} / {listModul[0].getJumlahPelajaran + listModul[1].getJumlahPelajaran}</p>
             </div>
           </div>
         </div>
@@ -64,7 +66,7 @@ function Perkembangan() {
             </div>
             <div>
               <p className="text-gray-700">Progress Belajar</p>
-              <p className="text-gray-800">{10}%</p>
+              <p className="text-gray-800">{((listModul[0].getJumlahSelesai + listModul[1].getJumlahSelesai) / (listModul[0].getJumlahPelajaran + listModul[1].getJumlahPelajaran) * 100).toFixed(0)}%</p>
             </div>
           </div>
         </div>
@@ -106,7 +108,7 @@ function Perkembangan() {
       {
         statistik == 'belajar' ?
           (
-            <div>
+            <div className="pb-5">
               <div className="p-6 my-8 bg-linear-to-br from-pink-50 to-purple-50 border-2 shadow-lg border-white gray">
                 <h2 className="text-gray-800 mb-6">📊 Progress Belajar Per Modul</h2>
                 <ResponsiveContainer width="100%" height={300}>
@@ -137,36 +139,31 @@ function Perkembangan() {
                 </ResponsiveContainer>
               </div>
 
-              {/* <div className="p-6 bg-linear-to-br from-blue-50 to-cyan-50 border-2 shadow-lg">
+              <div className="p-6 bg-linear-to-br from-pink-50 to-purple-50 border-2 shadow-lg border-white">
                 <h2 className="text-gray-800 mb-6">📖 Detail Per Modul</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {modules.map((module, index) => {
+                  {listModul.map((module, index) => {
                     const Icon = module.icon;
-                    const completed = learningStats[module.id] || 0;
-                    const percentage = ((completed / module.total) * 100).toFixed(0);
+                    const completed = module.getJumlahSelesai;
+                    const percentage = ((completed / module.getJumlahPelajaran) * 100).toFixed(0);
 
                     return (
-                      <div
-                        key={module.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <div className={`p-4 ${module.bgColor} border-2 shadow-md`}>
+                      <div key={index}>
+                        <div className="p-4 border-white border-2 bg-linear-to-br from-blue-100 to-cyan-100 shadow-md">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className={`p-2 rounded-lg bg-linear-to-br ${module.color}`}>
-                              <Icon className="w-5 h-5 text-white" aria-hidden="true" />
+                            <div className="p-2 rounded-lg bg-linear-to-br from-pink-400 to-rose-500">
+                              {Icon}
                             </div>
-                            <h3 className="text-gray-800">{module.title}</h3>
+                            <h3 className="text-gray-800">{module.getJudul}</h3>
                           </div>
                           <div className="space-y-2">
                             <div className="flex justify-between text-gray-700">
                               <span>Progress:</span>
-                              <span className="font-bold">{completed} / {module.total}</span>
+                              <span className="font-bold">{completed} / {module.getJumlahPelajaran}</span>
                             </div>
                             <div className="w-full bg-white rounded-full h-3 shadow-inner">
                               <div
-                                className={`h-3 rounded-full bg-linear-to-r ${module.color} transition-all duration-500`}
+                                className="h-3 rounded-full bg-linear-to-r from-pink-400 to-rose-500 transition-all duration-500"
                                 style={{ width: `${percentage}%` }}
                               />
                             </div>
@@ -177,7 +174,7 @@ function Perkembangan() {
                     );
                   })}
                 </div>
-              </div> */}
+              </div>
             </div>
           ) : (
             <div>
@@ -205,7 +202,7 @@ function Perkembangan() {
                       }}
                     />
                     <Legend />
-                    <Line 
+                    <Line
                       type="monotone"
                       dataKey="skor"
                       stroke="#3b82f6"
