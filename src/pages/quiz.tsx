@@ -17,7 +17,7 @@ function Quiz() {
   const [quizStarted, setQuizStarted] = useState(false);
   /** Menyimpan pilihan jawaban disepanjang kuis */
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-  /** Index dari pertanyaan saat ini yang sedang ditampilkan ke pengguna */
+  /** Index dari pertanyaan saat ini yang sedang ditampilkan ke */
   const [currentQuestion, setCurrentQuestion] = useState(0);
   /** Daftar pertanyaan yang digunakan untuk kuis */
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
@@ -31,7 +31,7 @@ function Quiz() {
    * */
   const questionType = ['choose-letter', 'choose-images']
   /** Mengambil semua huruf yang pernah dipelajari dari dalam AlphabetModule */
-  const learned = useModuleStore(s => s.modules)[0].materials
+  const learned = useModuleStore(s => s.modules)[0]?.materials
     .filter(item => item.isLearned == true)
     .map(item => item.id);
 
@@ -41,7 +41,7 @@ function Quiz() {
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
 
   /**
-   * Menyimpan pilihan pengguna berdasarkan id pertanyaan dan index jawaban
+   * Menyimpan pilihan jawaban berdasarkan id pertanyaan dan index jawaban
    * @param {number} questionId - id dari pertanyaan dalam bentuk angka
    * @param {number} answerIndex - index dari jawaban yang dipilih 
    */
@@ -53,7 +53,7 @@ function Quiz() {
   };
 
   /**
-   * Fungsi dipanggil ketika pengguna menekan tombol selanjutnya dari pertanyaan kuis
+   * Fungsi dipanggil ketika menekan tombol selanjutnya dari pertanyaan kuis
    */
   function handleNext() {
     /** lanjutkan ke pertanyaan selanjutnya */
@@ -87,7 +87,7 @@ function Quiz() {
   };
 
   /**
-   * Mereset kuis ketika pengguna menekan tombol ulangi kuis
+   * Mereset kuis ketika menekan tombol ulangi kuis
    */
   const resetQuiz = () => {
     setCurrentQuestion(0);
@@ -122,7 +122,7 @@ function Quiz() {
      * ketika materi yang selesai dipelajari masih 1 atau kurang dari 1, 
      * maka tidak bisa lanjut untuk menjalankan kuis
     */
-    if (learned.length <= 1) return
+    if (learned?.length || 0 <= 1) return
 
     /**
      * Buat objek kuis dan masukkan ke dalam daftar pertanyaan untuk kuis
@@ -181,15 +181,15 @@ function Quiz() {
         <div className="max-w-2xl mx-auto">
           <div className="p-8 text-center bg-linear-to-br from-yellow-100 to-orange-100 border-4 shadow-2xl bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-gray-300">
             <FaTrophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" aria-hidden="true" />
-            <h1 className="bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            <h1 className="bg-linear-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               🎯 Kuis Bahasa Isyarat 🎯
             </h1>
             <p className="text-gray-700 mb-6">
               Uji pemahaman Kamu tentang bahasa isyarat dengan menjawab 5 pertanyaan berikut.
               Kamu akan mendapatkan skor di akhir kuis! 🌟
               {
-                learned.length <= 1 && (
-                  <div className="bg-yellow-200 p-5 mt-10">
+                learned?.length <= 1 && (
+                  <div className="bg-yellow-200 p-5 mt-5">
                     <CiWarning className="mx-auto w-20 h-20" />
                     <p>
                       Kamu masih belum bisa untuk mengerjakan kuis, harap belajar paling tidak 2 materi modul huruf terlebih dahulu</p>
@@ -198,7 +198,7 @@ function Quiz() {
               }
             </p>
             <button
-              disabled={learned.length <= 1}
+              disabled={learned?.length <= 1}
               onClick={() => setQuizStarted(true)}
               className="bg-linear-to-r from-orange-500 to-pink-500 text-white border-0 hover:not-disabled:scale-105 transition-transform shadow-lg py-2 rounded-md hover:not-disabled:cursor-pointer hover:disabled:cursor-not-allowed disabled:opacity-30"
             >
@@ -212,7 +212,7 @@ function Quiz() {
 
   if (showResults) {
     const score = calculateScore();
-    const percentage = (score / quizQuestions.length) * 100;
+    const percentage = (score / quizQuestions?.length) * 100;
 
     return (
       <div className="container mx-auto px-4 py-8">
@@ -225,7 +225,7 @@ function Quiz() {
               </h1>
               <div className="mb-4">
                 <div className="text-gray-800">
-                  Skor Kamu: {score} dari {quizQuestions.length}
+                  Skor Kamu: {score} dari {quizQuestions?.length}
                 </div>
                 <div className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full inline-block mt-2">
                   Persentase: {percentage.toFixed(0)}%
