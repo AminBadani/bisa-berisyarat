@@ -17,9 +17,7 @@ File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
 ## Demo - Work In Progress
-<video height="300" controls>
-  <source src="public/demo.mp4" type="video/mp4">
-</video>
+<video src="public/demo.mp4" height="300"></video> 
 
 # Object Oriented Programming (OOP)
 
