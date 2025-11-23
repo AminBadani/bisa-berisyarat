@@ -15646,9 +15646,7 @@ ipcMain$1.handle("store:quiz:remove", (_, date) => {
   return quizzes;
 });
 ipcMain$1.handle("store:quiz:clear", () => {
-  const updated = {
-    quiz: []
-  };
+  const updated = [];
   store.set("quiz", updated);
   return updated;
 });
