@@ -109,7 +109,7 @@ function Progress() {
             </div>
             <div>
               <p className="text-gray-700">Total Kuis</p>
-              <p className="text-gray-800">{10}</p>
+              <p className="text-gray-800">{quizHistory.length}</p>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ function Progress() {
             </div>
             <div>
               <p className="text-gray-700">Rata-rata Skor Kuis</p>
-              <p className="text-gray-800">{10}%</p>
+              <p className="text-gray-800">{(quizHistory.map(item => item.score).reduce((a, b) => a + b, 0) / quizHistory.length || 0) * 100}%</p>
             </div>
           </div>
         </div>
@@ -294,7 +294,7 @@ function Progress() {
                   </div>
                 </>
               ) : (
-                <div className="p-12 text-center bg-linear-to-br from-gray-50 to-gray-100 border-2">
+                <div className="p-12 text-center my-8 bg-linear-to-br from-pink-50 to-purple-50 border-2 shadow-lg border-white gray">
                   <FaTrophy className="w-16 h-16 text-gray-400 mx-auto mb-4" aria-hidden="true" />
                   <h2 className="text-gray-800 mb-2">Belum Ada Riwayat Kuis</h2>
                   <p className="text-gray-600 mb-6">
