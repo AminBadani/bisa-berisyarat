@@ -4,15 +4,27 @@ import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContai
 import { useModuleStore } from "../store/moduleStore";
 import { LearningChart, QuizChart, QuizHistory } from "../types/Chart";
 
+/**
+ * Halaman progress, berisi statistik lengkap pelajaran dan kuis yang pernah dilakukan
+ */
 function Progress() {
+  /** Pilihan statistik yang ditampilkan, antara 'belajar' atau 'kuis' */
   const [statistik, setStatistik] = useState('belajar');
+  /** Data yang digunakan untuk menampilkan statistik pelajaran */
   const [learningChartData, setLearningChartData] = useState<LearningChart[]>([])
+  /** Data yang digunakan untuk menampilkan statistik kuis dalam bentuk chart */
   const [quizChartData, setquizChartData] = useState<QuizChart[]>([])
+  /** Daftar kuis yang pernah dilakukan */
   const [quizHistory, setQuizHistory] = useState<QuizHistory[]>([]);
 
+  /** Mengambil module pelajaran dari dari store */
   const modules = useModuleStore(s => s.modules);
 
-  const formatDate = (dateString: string) => {
+  /** 
+   * Memformat tanggal kuis agar lebih mudah dibaca ketika ditampilkan 
+   * @param {string} dateString - tanggal dari kuis
+  */
+  function formatDate(dateString: string) {
     const date = new Date(dateString);
     return date.toLocaleDateString('id-ID', {
       day: 'numeric',
@@ -23,7 +35,12 @@ function Progress() {
     });
   }
 
+  /**
+   * Fungsi useEffect dari React,
+   * yang dijalankan 1 kali ketika halaman dimuat
+   */
   useEffect(() => {
+    /** Mengambil dan memasukkan data pelajaran untuk ditampilkan berdasarkan module */
     setLearningChartData(
       modules.map((item) => {
         return {
@@ -35,6 +52,7 @@ function Progress() {
       })
     )
 
+    /** Mengambil data kuis yang pernah dikerjakan dari dalam file .json */
     window.api.getQuiz().then(result => {
       setquizChartData(
         result.map((item: any, index: any) => {

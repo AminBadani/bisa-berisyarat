@@ -1,38 +1,66 @@
 import { useEffect, useState } from "react";
-import { FaCircleXmark } from "react-icons/fa6";
-import { FaCheckCircle, FaTrophy } from "react-icons/fa";
+import { FaCircleXmark, FaTrophy, FaCircleCheck } from "react-icons/fa6";
+import { CiWarning } from "react-icons/ci";
 import { useModuleStore } from "../store/moduleStore";
 
 import Radio from "../components/Radio";
 import Question from "../models/Question";
-import { CiWarning } from "react-icons/ci";
 
+/**
+ * Halaman quiz untuk memulai kuis dan menjawab soal
+ */
 function Quiz() {
+  /** Import semua gambar dari dalam folder letter */
   const letterImages: Record<string, string> = import.meta.glob('../assets/letter/*.png', { eager: true, import: 'default' });
 
+  /** Menentukan apakah kuis dimulai */
   const [quizStarted, setQuizStarted] = useState(false);
+  /** Menyimpan pilihan jawaban disepanjang kuis */
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
+  /** Index dari pertanyaan saat ini yang sedang ditampilkan ke pengguna */
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  /** Daftar pertanyaan yang digunakan untuk kuis */
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
+  /** Menentukan apakah hasil dari kuis ditampilkan */
   const [showResults, setShowResults] = useState(false);
 
+  /** 
+   * Ada 2 tipe soal, pilih kata atau pilih gambar 
+   * Pilih kata: memilih kata yang sesuai dari gambar isyarat yang diberikan
+   * Pilih gambar: memilih gambay isyarat yang sesuai dengan kata dari soal
+   * */
   const questionType = ['choose-letter', 'choose-images']
-  const learned = useModuleStore(s => s.modules)[0].materials.filter(item => item.isLearned == true).map(item => item.id);
+  /** Mengambil semua huruf yang pernah dipelajari dari dalam AlphabetModule */
+  const learned = useModuleStore(s => s.modules)[0].materials
+    .filter(item => item.isLearned == true)
+    .map(item => item.id);
 
+  /** Isi dari pertanyaa saat ini, berdasarkan indexnya */
   const question = quizQuestions[currentQuestion];
+  /** Progress dari kuis yang sedang dikerjakan dalam bentuk persen, misal 1 dari 5 maka 20% */
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
 
+  /**
+   * Menyimpan pilihan pengguna berdasarkan id pertanyaan dan index jawaban
+   * @param {number} questionId - id dari pertanyaan dalam bentuk angka
+   * @param {number} answerIndex - index dari jawaban yang dipilih 
+   */
   function handleAnswerSelect(questionId: number, answerIndex: number) {
     setSelectedAnswers((prev) => ({
       ...prev,
       [questionId]: answerIndex,
     }));
-    console.log(selectedAnswers);
   };
 
-  const handleNext = () => {
+  /**
+   * Fungsi dipanggil ketika pengguna menekan tombol selanjutnya dari pertanyaan kuis
+   */
+  function handleNext() {
+    /** lanjutkan ke pertanyaan selanjutnya */
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
+
+      /** simpan hasil kuis dan tampilkan hasilnya */
     } else {
       const result = {
         date: new Date().toISOString(),
@@ -45,7 +73,10 @@ function Quiz() {
     }
   };
 
-  const calculateScore = () => {
+  /**
+   * Menghitung score akhir berdasarkan jawaban yang dipilih
+   */
+  function calculateScore() {
     let score = 0;
     quizQuestions.forEach((question) => {
       if (selectedAnswers[question.id] === question.correctAnswer) {
@@ -55,6 +86,9 @@ function Quiz() {
     return score;
   };
 
+  /**
+   * Mereset kuis ketika pengguna menekan tombol ulangi kuis
+   */
   const resetQuiz = () => {
     setCurrentQuestion(0);
     setSelectedAnswers({});
@@ -62,6 +96,11 @@ function Quiz() {
     setQuizStarted(false);
   };
 
+  /**
+   * Mengambil sejumlah huruf acak dari alphabet
+   * @param k - jumlah huruf yang diambil
+   * @return {Array} k buah huruf acak
+   */
   function getRandomLetters(k = 4) {
     const letters = "abcdefghijklmnopqrstuvwxyz".split('');
 
@@ -74,24 +113,44 @@ function Quiz() {
     return letters.slice(0, k);
   }
 
+  /**
+   * Fungsi useEffect dari React,
+   * yang dijalankan 1 kali ketika halaman dimuat
+   */
   useEffect(() => {
+    /** 
+     * ketika materi yang selesai dipelajari masih 1 atau kurang dari 1, 
+     * maka tidak bisa lanjut untuk menjalankan kuis
+    */
     if (learned.length <= 1) return
 
+    /**
+     * Buat objek kuis dan masukkan ke dalam daftar pertanyaan untuk kuis
+     */
     setQuizQuestions(
+      /** Buat array yang berisi 5 item (ada 5 pertanyaan) */
       Array.from({ length: 5 }, (_, index) => {
+        /** Memilih tipe secara acak */
         const tipe = questionType[Math.round(Math.random())]
+        /** Memilih acak huruf yang selesai dipelajari sebagai soal */
         const soal = learned[Math.floor(Math.random() * learned.length)]
-        let opsi = Array.from({ length: 4 }, (_, index) => {
-          const abjad = getRandomLetters(4);
-
+        /** Ambil 4 huruf acak */
+        const abjad = getRandomLetters(4);
+        /** Buat opsi berdasarkan 4 huruf acak yang sudah didapatkan */
+        let opsi = abjad.map(huruf => {
           return tipe == 'choose-letter'
-            ? abjad[index]
-            : letterImages[`../assets/letter/${abjad[index]}.png`]
-
+            ? huruf
+            : letterImages[`../assets/letter/${huruf}.png`]
         })
 
+        /**
+         * Pastikan opsi memiliki jawaban yang valid, 
+         * Jika tidak ada, maka ubah salah satu opsi
+        */
         if (!opsi.some(item => item == soal)) {
+          /** Ambil nilai random dari 0 sampai 3 */
           const random4 = Math.floor(Math.floor(Math.random() * 4));
+          /** Ubah opsi pada index yang sesuai dengan nilai random yang didapat sebelumnya */
           opsi = opsi.map((item, index) => {
             return index == random4
               ? tipe == 'choose-letter'
@@ -101,6 +160,10 @@ function Quiz() {
           })
         }
 
+        /**
+         * Membuat objek Question,
+         * berdasarkan tipe, opsi, dan jawaban yang sudah didapatkan
+         */
         return new Question(index + 1,
           tipe,
           tipe == 'choose-letter' ? letterImages[`../assets/letter/${soal}.png`] : soal,
@@ -187,7 +250,7 @@ function Quiz() {
                   <div key={question.id} className="p-4 bg-white rounded-xl">
                     <div className="flex items-start gap-3">
                       {isCorrect ? (
-                        <FaCheckCircle className="w-6 h-6 text-green-600 shrink-0 mt-1" aria-hidden="true" />
+                        <FaCircleCheck className="w-6 h-6 text-green-600 shrink-0 mt-1" aria-hidden="true" />
                       ) : (
                         <FaCircleXmark className="w-6 h-6 text-red-600 shrink-0 mt-1" aria-hidden="true" />
                       )}
@@ -196,7 +259,7 @@ function Quiz() {
                           question.type == 'choose-letter' ?
                             (
                               <p className="text-gray-800 mb-2">
-                                {index + 1}. Pilihlah huruf yang sesuai gambar 
+                                {index + 1}. Pilihlah huruf yang sesuai gambar
                                 <img src={question.question} alt="" className="h-20" />
                               </p>
                             ) : (
@@ -224,17 +287,17 @@ function Quiz() {
                         </p>
                         {!isCorrect && (
                           question.type == 'choose-letter' ? (
-                          <p className="text-gray-600">
-                            Jawaban Benar: <span className="text-green-600">
-                              {question.options[question.correctAnswer].toUpperCase()}
-                            </span>
-                          </p>
+                            <p className="text-gray-600">
+                              Jawaban Benar: <span className="text-green-600">
+                                {question.options[question.correctAnswer].toUpperCase()}
+                              </span>
+                            </p>
                           ) : (
-                          <p className="text-gray-600">
-                            Jawaban Benar: <span className="text-green-600">
-                              <img src={question.options[question.correctAnswer]} alt="" className="h-20" />
-                            </span>
-                          </p>
+                            <p className="text-gray-600">
+                              Jawaban Benar: <span className="text-green-600">
+                                <img src={question.options[question.correctAnswer]} alt="" className="h-20" />
+                              </span>
+                            </p>
 
                           )
                         )}
@@ -249,7 +312,7 @@ function Quiz() {
               <button onClick={() => resetQuiz()} className="bg-white rounded-md px-5 py-2 text-sm hover:bg-gray-100 hover:cursor-pointer">
                 Ulangi Kuis
               </button>
-              <button onClick={() => window.location.href = '/learn'}  className="bg-black text-white rounded-md px-5 py-2 text-sm hover:bg-gray-900 hover:cursor-pointer">
+              <button onClick={() => window.location.href = '/learn'} className="bg-black text-white rounded-md px-5 py-2 text-sm hover:bg-gray-900 hover:cursor-pointer">
                 Kembali Belajar
               </button>
             </div>

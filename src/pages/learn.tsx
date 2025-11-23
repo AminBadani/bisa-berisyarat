@@ -13,21 +13,35 @@ import WordModule from "../models/modules/WordModule";
 import letter from "../data/letter.json";
 import word from "../data/word.json";
 
+/**
+ * Halaman utama untuk memilih modul pelajaran dan melihat statistik singkat
+ */
 function Learn() {
-
+  /** Import semua gambar dari dalam folder letter */
   const letterImages: Record<string, string> = import.meta.glob('../assets/letter/*.png', { eager: true, import: 'default' });
 
+  /** Modul yang saat ini sedang dipilih */
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
+  /** Index materi dari modul yang dipilih, misal alphabetModul[0 sampai 25] */
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
+  /** Data quiz yang digunakan untuk menampilkan statisik kuis */
   const [quizChart, setQuizChart] = useState<QuizChart[]>([]);
 
+  /** Daftar modul yang bisa dipilih, ada 2 alphabetModule dan wordModule */
   const modules = useModuleStore(s => s.modules);
+  /** Digunakan untuk meng-update isi dari modules */
   const setModules = useModuleStore(s => s.setModules);
 
-  const currentModule = selectedModule?.materials[currentLearningIndex || 0];
+  /** Materi yang saat ini sedang dipilih untuk ditampilkan */
+  const currentMateri = selectedModule?.materials[currentLearningIndex || 0];
 
+  /**
+   * Update materi menjadi selesai dipelajari dan tambahkan ke dalam progress,
+   * untuk memastikan antara data yang tersimpan dan yang ditampilkan sinkron 
+   * @param materialIndex 
+   */
   function doneLearned(materialIndex: number) {
-    if (!selectedModule) return;
+    if (!selectedModule) return; /** Memastikan bahwa ada module yang dipilih */
 
     const updateModul = useModuleStore.getState().updateModule;
 
@@ -35,17 +49,24 @@ function Learn() {
     updated.materials = selectedModule.materials.map(m => m.clone());
     updated.materials[materialIndex].changeFinishedTrue(updated.id);
 
-    // Update local state
+    // Update selectedModul dilokal
     setSelectedModule(updated);
 
-    // Update in global Zustand store
+    // Update global modul yang tersimpan 
     updateModul(updated.id, updated);
   }
 
+  /**
+   * Fungsi useEffect dari React,
+   * yang dijalankan 1 kali ketika halaman dimuat
+   */
   useEffect(() => {
+    /** Ambil semua isi dari module di dalam file .json */
     window.api.get("module").then(result => {
 
+      /** Ambil dari module.learn == 'letter' */
       const letters = result.find((item: any) => item.learn === 'letter')
+      /** Membuat objek AlphabetModule */
       const letterModule = new AlphabetModule('Belajar huruf', 'Pelajari isyarat untuk huruf A-Z',
         letter.map(item =>
           new LearningMaterial(
@@ -58,7 +79,9 @@ function Learn() {
         <FaBook className="text-white w-6 h-6" />
       )
 
+      /** Ambil dari module.learn == 'word' */
       const words = result.find((item: any) => item.learn === 'word')
+      /** Membuat objek WordModule */
       const wordModule = new WordModule('Belajar kata', 'Pelajari kata dasar yang digunakan sehari-hari',
         word.map(item =>
           new LearningMaterial(
@@ -71,9 +94,11 @@ function Learn() {
         <FaComment className="text-white  w-6 h-6" />
       );
 
+      /** Masukkan objek AlphabetModule dan WordModule ke dalam list modules */
       setModules([letterModule, wordModule]);
     });
 
+    /** Ambil semua data quiz dari dalam file .json */
     window.api.getQuiz().then(result => {
       setQuizChart(
         result.map((item: any, index: any) => {
@@ -204,13 +229,13 @@ function Learn() {
                       <div className="mb-4">
                         <div className="p-4 rounded-2xl shadow-2xl border-4 border-white relative">
                           <img
-                            src={currentModule?.image}
-                            alt={`Bahasa isyarat untuk ${currentModule?.id}`}
+                            src={currentMateri?.image}
+                            alt={`Bahasa isyarat untuk ${currentMateri?.id}`}
                             className="w-64 h-64 object-contain rounded-xl"
                           />
                           <div className={`absolute -top-3 -right-3 px-4 py-2 rounded-full bg-linear-to-br from-yellow-50 to-orange-50 text-white shadow-lg`}>
                             <span className="text-xl text-black">
-                              {currentModule?.id.toUpperCase()}
+                              {currentMateri?.id.toUpperCase()}
                             </span>
                           </div>
                         </div>
@@ -223,10 +248,10 @@ function Learn() {
               <div className="mt-20">
                 <div className="mb-8 text-center">
                   <h2 className="text-gray-800 mb-2">
-                    ⭐ Huruf {currentModule?.id.toUpperCase()} ⭐
+                    ⭐ Huruf {currentMateri?.id.toUpperCase()} ⭐
                   </h2>
                   <p className="text-gray-700">
-                    {currentModule?.description}
+                    {currentMateri?.description}
                   </p>
                 </div>
               </div>
