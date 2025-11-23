@@ -228,12 +228,19 @@ function Learn() {
                     <div className="flex flex-col items-center justify-center mb-6">
                       <div className="mb-4">
                         <div className="p-4 rounded-2xl shadow-2xl border-4 border-white relative">
-                          <img
-                            src={currentMateri?.image}
-                            alt={`Bahasa isyarat untuk ${currentMateri?.id}`}
-                            className="w-64 h-64 object-contain rounded-xl"
-                          />
-                          <div className={`absolute -top-3 -right-3 px-4 py-2 rounded-full bg-linear-to-br from-yellow-50 to-orange-50 text-white shadow-lg`}>
+                          {
+                            currentMateri?.image != '' ?
+                              (
+                                <img
+                                  src={currentMateri?.image}
+                                  alt={`Bahasa isyarat untuk ${currentMateri?.id}`}
+                                  className="w-64 h-64 object-contain rounded-xl"
+                                />
+                              ) : (
+                                <p>Masih belum ada gambar</p>
+                              )
+                          }
+                          <div className={`${selectedModule?.id != 'letter' ? 'hidden' : ''} absolute -top-3 -right-3 px-4 py-2 rounded-full bg-linear-to-br from-yellow-50 to-orange-50 text-white shadow-lg`}>
                             <span className="text-xl text-black">
                               {currentMateri?.id.toUpperCase()}
                             </span>
@@ -354,11 +361,19 @@ function Learn() {
                       )}
                       <div className="flex flex-col items-center justify-center text-center h-32">
                         <div className="mb-2">
-                          <img
-                            src={item.image}
-                            alt={`Isyarat ${item.id}`}
-                            className="w-32 h-32 object-cover rounded-lg"
-                          />
+                          {
+                            item?.image != '' ?
+                              (
+                                <img
+                                  src={item.image}
+                                  alt={`Isyarat ${item.id}`}
+                                  className="w-32 h-32 object-cover rounded-lg"
+                                />
+                              ) :
+                              (
+                                <p>No Image</p>
+                             )
+                          }
                         </div>
                         <p className="text-gray-800">{item.id.toUpperCase()}</p>
                       </div>
