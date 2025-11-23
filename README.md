@@ -39,7 +39,7 @@ Class dari program disimpan di dalam folder `/src/models/`.
 - `Class`: blueprint dari objek
 - `Object`: perwujudan nyata dari class
 
-Sebuah class berisi atribut dan fungsi, atribut adalah hal-hal yang melekat pada sebuah objek, sedangkan fungsi adalah perilaku/sifat dari objek. Didalam program terdapa 5 `Class`, yakni 3 `Superclass` dan 2 `Subclass`
+Sebuah class berisi atribut dan fungsi, atribut adalah hal-hal yang melekat pada sebuah objek, sedangkan fungsi adalah perilaku/sifat dari objek. Didalam program terdapat 5 `Class`, yakni 3 `Superclass` dan 2 `Subclass`
 
 1. `LearningModules`: digunakan untuk membuat objek modul pelajaran
     - `AlphabetModule`: turunan modul pelajaran, khusus untuk belajar huruf 
@@ -142,4 +142,5 @@ class LearningModule {
 }
 
 ```
+
 
