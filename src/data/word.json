@@ -1,22 +1,62 @@
 [
     {
         "word": "halo",
-        "description": "Halo"
+        "description": "Kata sapaan kepada orang lain"
     },
     {
         "word": "selamat-pagi",
-        "description": "Selamat Pagi"
+        "description": "Ucapan salam yang digunakan pada pagi hari"
     },
     {
         "word": "terima-kasih",
-        "description": "Terima Kasih"
-    },
-    {
-        "word": "permisi",
-        "description": "Permisi"
+        "description": "Ungkapan untuk menunjukkan rasa syukur atas kebaikan orang lain"
     },
     {
         "word": "sampai-jumpa",
-        "description": "Sampai Jumpa"
+        "description": "Kalimat perpisahan yang dengan harapan untuk bertemu kembali"
+    },
+    {
+        "word": "saya",
+        "description": "Kata ganti orang pertama yang digunakan untuk merujuk pada diri sendiri"
+    },
+    {
+        "word": "kamu",
+        "description": " Kata ganti orang kedua yang digunakan untuk menyapa atau merujuk orang yang diajak bicara"
+    },
+    {
+        "word": "makan",
+        "description": "Kegiatan mengonsumsi makanan untuk mendapatkan energi dan nutrisi"
+    },
+    {
+        "word": "minum",
+        "description": "Kegiatan memasukkan cairan ke dalam tubuh untuk menghilangkan haus"
+    },
+    {
+        "word": "sekolah",
+        "description": "Tempat untuk belajar dan menuntut ilmu pengetahuan"
+    },
+    {
+        "word": "teman",
+        "description": "Seseorang yang memiliki hubungan akrab"
+    },
+    {
+        "word": "keluarga",
+        "description": "Kelompok orang yang terhubung memiliki ikatan dekat"
+    },
+    {
+        "word": "belajar",
+        "description": "Proses memperoleh pengetahuan atau keterampilan baru"
+    },
+    {
+        "word": "abjad",
+        "description": "Deretan huruf yang menjadi dasar penyusunan kata dalam suatu bahasa"
+    },
+    {
+        "word": "rumah",
+        "description": "Bangunan yang menjadi tempat tinggal dan berlindung bagi seseorang atau keluarga"
+    },
+    {
+        "word": "bermain",
+        "description": "Aktivitas yang dilakukan untuk bersenang-senang atau mengisi waktu luang"
     }
 ]
