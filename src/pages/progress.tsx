@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaAward, FaChartLine, FaStar, FaTrophy } from "react-icons/fa";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useModulStore } from "../store/modulStore";
+import { useModuleStore } from "../store/moduleStore";
 
 type LearningChart = {
   name: string,
@@ -22,7 +22,7 @@ function Progress() {
   const [learningChartData, setLearningChartData] = useState<LearningChart[]>([])
   const [quizChartData, setquizChartData] = useState<QuizChart[]>([])
 
-  const modules = useModulStore(s => s.modules);
+  const modules = useModuleStore(s => s.modules);
 
   useEffect(() => {
     setLearningChartData(

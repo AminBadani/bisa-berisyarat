@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaBook, FaComment, FaTrophy, FaCheckCircle } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { useModulStore } from "../store/modulStore";
+import { useModuleStore } from "../store/moduleStore";
 
 import Card from "../components/Card"
 import LearningModule from "../models/LearningModule"
@@ -27,15 +27,15 @@ function Learn() {
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
   const [chartQuiz, setChartQuiz] = useState<ChartQuiz[]>([]);
 
-  const modules = useModulStore(s => s.modules);
-  const setModules = useModulStore(s => s.setModules);
+  const modules = useModuleStore(s => s.modules);
+  const setModules = useModuleStore(s => s.setModules);
 
   const currentModule = selectedModule?.materials[currentLearningIndex || 0];
 
   function doneLearned(materialIndex: number) {
     if (!selectedModule) return;
 
-    const updateModul = useModulStore.getState().updateModule;
+    const updateModul = useModuleStore.getState().updateModule;
 
     const updated = selectedModule.clone();
     updated.materials = selectedModule.materials.map(m => m.clone());
