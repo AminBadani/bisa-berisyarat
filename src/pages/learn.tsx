@@ -101,7 +101,7 @@ function Learn() {
     /** Ambil semua data quiz dari dalam file .json */
     window.api.getQuiz().then(result => {
       setQuizChart(
-        result.map((item: any, index: any) => {
+        result.quiz.map((item: any, index: any) => {
           return {
             quiz: `Kuis ${index + 1}`,
             skor: item.score,
