@@ -15,7 +15,7 @@ File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari
 6. `/src/stores`: berisi file yang digunakan agar objek-objek dari class yang sudah dibuat/di-inisialisasi bisa diakses antar halaman (dapat diakses di semua halaman)
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
-**Catatan:** Tempat penyimpanan progress pengguna (app-data.json) berbeda-beda tergantung sistem operasi
+**Catatan:** Tempat penyimpanan progres pengguna (app-data.json) berbeda-beda tergantung sistem operasi
 - Mac OS: `~/Library/Application Support/bisa-berisyarat`
 - Windows: `C:\Users\<you>\AppData\Local\bisa-berisyarat`
 - Linux: `~/.config/bisa-berisyarat`
@@ -25,7 +25,7 @@ https://github.com/user-attachments/assets/0053c0c1-434b-4dd3-9b1b-88fc3945eabb
 
 # Object Oriented Programming (OOP)
 
-Aplikasi ini dibuat untuk tugas kuliah Pemorograman Berorientasi Objek (PBO), sehingga logika program dibuat dengan menerapkan konsep-konse dalam PBO. Adapun konsep-konsep yang digunakan antara lain:
+Aplikasi ini dibuat untuk tugas mata kuliah Pemorograman Berorientasi Objek (PBO), sehingga logika program dibuat dengan menerapkan konsep-konsep dalam Pemorograman Berorientasi Objek. Adapun konsep-konsep yang digunakan antara lain:
 - [x] Object & Class
 - [x] Inheritance (pewarisam)
 - [ ] Polymorphism 
@@ -142,3 +142,4 @@ class LearningModule {
 }
 
 ```
+
