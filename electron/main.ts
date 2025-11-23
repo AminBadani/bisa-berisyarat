@@ -142,9 +142,7 @@ ipcMain.handle("store:quiz:remove", (_, date) => {
 });
 
 ipcMain.handle("store:quiz:clear", () => {
-  const updated = {
-    quiz: []
-  }
+  const updated: [] = []
 
   store.set("quiz", updated);
   return updated;
