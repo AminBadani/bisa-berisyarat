@@ -2,26 +2,7 @@ import { useEffect, useState } from "react";
 import { FaAward, FaChartLine, FaStar, FaTrophy } from "react-icons/fa";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useModuleStore } from "../store/moduleStore";
-
-type LearningChart = {
-  name: string,
-  selesai: number,
-  total: number,
-  persentase: number,
-}
-
-type QuizChart = {
-  quiz: string,
-  skor: number,
-  maksimal: number,
-  persentase: number,
-}
-
-type QuizHistory = {
-  date: string,
-  score: number,
-  total: number
-}
+import { LearningChart, QuizChart, QuizHistory } from "../types/Chart";
 
 function Progress() {
   const [statistik, setStatistik] = useState('belajar');

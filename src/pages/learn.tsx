@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaBook, FaComment, FaTrophy, FaCheckCircle } from "react-icons/fa"
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useModuleStore } from "../store/moduleStore";
+import { QuizChart } from "../types/Chart";
 
 import Card from "../components/Card"
 import LearningModule from "../models/LearningModule"
@@ -12,20 +13,13 @@ import WordModule from "../models/modules/WordModule";
 import letter from "../data/letter.json";
 import word from "../data/word.json";
 
-type ChartQuiz = {
-  quiz: string,
-  skor: number,
-  maksimal: number,
-  persentase: number,
-}
-
 function Learn() {
 
   const letterImages: Record<string, string> = import.meta.glob('../assets/letter/*.png', { eager: true, import: 'default' });
 
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number | null>(null);
-  const [chartQuiz, setChartQuiz] = useState<ChartQuiz[]>([]);
+  const [quizChart, setQuizChart] = useState<QuizChart[]>([]);
 
   const modules = useModuleStore(s => s.modules);
   const setModules = useModuleStore(s => s.setModules);
@@ -81,7 +75,7 @@ function Learn() {
     });
 
     window.api.getQuiz().then(result => {
-      setChartQuiz(
+      setQuizChart(
         result.map((item: any, index: any) => {
           return {
             quiz: `Kuis ${index + 1}`,
@@ -116,7 +110,7 @@ function Learn() {
                       selesai={item.countFinished}
                       jumlah={item.countMaterials}
                       icon={item.icon}
-                      onClick={() => { setSelectedModule(item); console.log(chartQuiz) }}
+                      onClick={() => { setSelectedModule(item); console.log(quizChart) }}
                     />
                   ))
 
@@ -154,7 +148,7 @@ function Learn() {
                 <div className="p-6 bg-linear-to-br from-yellow-50 to-orange-50 border-2 shadow-lg border-white h-fit">
                   <h2 className="text-gray-800 mb-6">📈 Grafik Perkembangan Skor Kuis</h2>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartQuiz}>
+                    <LineChart data={quizChart}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="quiz" />
                       <YAxis domain={[0, 5]} />
