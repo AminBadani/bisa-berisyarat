@@ -10,7 +10,7 @@ type Props = {
 function Card({ judul, deskripsi, selesai, jumlah, icon, onClick }: Props) {
   return (
     <div 
-    className="px-7 bg-card text-card-foreground flex flex-col rounded-xl border p-4 cursor-pointer hover:shadow-2xl transition-all h-full border-white bg-linear-to-br from-blue-100 to-cyan-100"
+    className="px-7 bg-card text-card-foreground flex flex-col rounded-xl border-2 p-4 cursor-pointer hover:shadow-2xl transition-all h-full border-gray-300 bg-linear-to-br from-blue-100 to-cyan-100"
     onClick={onClick}
     >
       
