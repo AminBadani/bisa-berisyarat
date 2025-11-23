@@ -11,7 +11,7 @@ interface ModulState {
     addModule: (mod: LearningModule) => void;
 }
 
-export const useModulStore = create<ModulState>((set) => ({
+export const useModuleStore = create<ModulState>((set) => ({
     modules: [],
 
     setModules: (mods) => set({ modules: mods }),
