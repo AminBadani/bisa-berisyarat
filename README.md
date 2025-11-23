@@ -1,6 +1,6 @@
 # BisaBerisyarat
 
-Aplikasi belajar bahasa isyarat menggunakan Sistem Isyarat Bahasa Indonesia untuk anak-anak. Dibuat menggunakan [Electron-Vite](https://electron-vite.github.io/) + [React](https://react.dev/) + [Tailwind](https://tailwindcss.com/)
+Aplikasi belajar bahasa isyarat menggunakan Sistem Isyarat Bahasa Indonesia (SIBI) untuk anak-anak berbasis aplikasi desktop. Dibuat menggunakan [Electron-Vite](https://electron-vite.github.io/) + [React](https://react.dev/) + [Tailwind](https://tailwindcss.com/)
 
 # Development
 ## Main Structure of The Project
@@ -16,7 +16,7 @@ File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
 ## Demo - Work In Progress
-
+https://github.com/user-attachments/assets/0053c0c1-434b-4dd3-9b1b-88fc3945eabb
 
 # Object Oriented Programming (OOP)
 
@@ -135,4 +135,5 @@ class LearningModule {
     get countMaterials() { return this._countMaterials }
     set countMaterials(value: number) { this._countMaterials = value }
 }
+
 ```
