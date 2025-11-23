@@ -29,5 +29,5 @@ electron.contextBridge.exposeInMainWorld("api", {
   getQuiz: () => electron.ipcRenderer.invoke("store:quiz:get"),
   addQuiz: (item) => electron.ipcRenderer.invoke("store:quiz:add", item),
   removeQuiz: (date) => electron.ipcRenderer.invoke("store:quix:remove", date),
-  clearQuiz: () => electron.ipcRenderer.invoke("store:finished:clear")
+  clearQuiz: () => electron.ipcRenderer.invoke("store:quiz:clear")
 });

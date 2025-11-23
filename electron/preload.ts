@@ -34,5 +34,5 @@ contextBridge.exposeInMainWorld("api", {
   getQuiz: () => ipcRenderer.invoke("store:quiz:get"),
   addQuiz: (item: any) => ipcRenderer.invoke("store:quiz:add", item),
   removeQuiz: (date: string) => ipcRenderer.invoke("store:quix:remove", date),
-  clearQuiz: () => ipcRenderer.invoke("store:finished:clear"),
+  clearQuiz: () => ipcRenderer.invoke("store:quiz:clear"),
 });
