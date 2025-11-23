@@ -122,7 +122,7 @@ function Quiz() {
      * ketika materi yang selesai dipelajari masih 1 atau kurang dari 1, 
      * maka tidak bisa lanjut untuk menjalankan kuis
     */
-    if (learned?.length || 0 <= 1) return
+    if (learned?.length <= 1) return
 
     /**
      * Buat objek kuis dan masukkan ke dalam daftar pertanyaan untuk kuis
@@ -133,7 +133,7 @@ function Quiz() {
         /** Memilih tipe secara acak */
         const tipe = questionType[Math.round(Math.random())]
         /** Memilih acak huruf yang selesai dipelajari sebagai soal */
-        const soal = learned[Math.floor(Math.random() * learned.length)]
+        const soal = learned[Math.floor(Math.random() * learned?.length)]
         /** Ambil 4 huruf acak */
         const abjad = getRandomLetters(4);
         /** Buat opsi berdasarkan 4 huruf acak yang sudah didapatkan */
@@ -347,26 +347,26 @@ function Quiz() {
 
           <div className="p-8 bg-linear-to-br from-blue-50 to-purple-50 border-4 shadow-xl bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-gray-300">
             {
-              (question.type == 'choose-letter') ?
+              (question?.type == 'choose-letter') ?
                 (
                   <img
-                    src={question.question}
+                    src={question?.question}
                     className="w-64 h-64 object-contain rounded-xl"
                   />
                 ) : (
                   <div className="content-center text-center font-bold text-[10rem] text-gray-900 w-64 h-64">
-                    {question.question.toUpperCase()}
+                    {question?.question.toUpperCase()}
                   </div>
                 )
             }
           </div>
 
           <div className="flex flex-col">
-            <h2 className="text-gray-800 mb-6">❓ {question.description}</h2>
+            <h2 className="text-gray-800 mb-6">❓ {question?.description}</h2>
             <ul className="select-none grid gap-4 grid-cols-2">
-              {question.options.map((item, index) => {
+              {question?.options.map((item, index) => {
                 return (
-                  <Radio key={index} value={item} label={item} tipe={question.type} checked={selectedAnswers[question.id] == index} onChange={() => handleAnswerSelect(question.id, index)} />
+                  <Radio key={index} value={item} label={item} tipe={question?.type} checked={selectedAnswers[question?.id] == index} onChange={() => handleAnswerSelect(question.id, index)} />
                 )
               })}
             </ul>
@@ -384,7 +384,7 @@ function Quiz() {
           </button>
           <button
             onClick={() => handleNext()}
-            disabled={selectedAnswers[question.id] === undefined}
+            disabled={selectedAnswers[question?.id] === undefined}
             className="ml-auto bg-black rounded-md text-white px-10 py-2 hover:bg-gray-800 hover:cursor-pointer hover:disabled:cursor-not-allowed disabled:opacity-30"
           >
             {currentQuestion === quizQuestions.length - 1 ? 'Lihat Hasil' : 'Selanjutnya'}
