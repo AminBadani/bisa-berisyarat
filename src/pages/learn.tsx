@@ -101,7 +101,7 @@ function Learn() {
     /** Ambil semua data quiz dari dalam file .json */
     window.api.getQuiz().then(result => {
       setQuizChart(
-        result.quiz.map((item: any, index: any) => {
+        result.map((item: any, index: any) => {
           return {
             quiz: `Kuis ${index + 1}`,
             skor: item.score,
@@ -182,7 +182,7 @@ function Learn() {
                           if (active && payload && payload.length) {
                             return (
                               <div className="bg-white p-3 rounded-lg shadow-lg border">
-                                <p className="text-gray-800">{payload[0].payload.quiz}</p>
+                                <p className="text-gray-800">{payload[0].pay}</p>
                                 <p className="text-blue-600">
                                   Skor: {payload[0].payload.skor} / {payload[0].payload.maksimal}
                                 </p>
