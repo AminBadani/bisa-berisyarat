@@ -1,7 +1,9 @@
+import { Link, useLocation, useNavigate } from "react-router";
 import { FaHandSparkles } from "react-icons/fa";
-import { Link, useLocation } from "react-router";
+import { CiWarning } from "react-icons/ci"; 
 
 function Navbar() {
+  const navigate = useNavigate();
   const location = useLocation()
   const menuItems = [
     { path: '/learn', label: 'Belajar' },
@@ -16,8 +18,8 @@ function Navbar() {
 
         <div className="flex justify-between items-center">
 
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center gap-2 hover:scale-105 transition-transform"
             aria-label="halaman-utama"
           >
@@ -32,27 +34,32 @@ function Navbar() {
               menuItems.map((item) => {
                 return (
                   <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`transition-all hover:scale-110 ${
-                        location.pathname === item.path 
-                          ? 'text-white bg-white/30 px-4 py-2 rounded-full' 
-                          : 'text-white/90 hover:text-white px-4 py-2'
+                    key={item.path}
+                    to={item.path}
+                    className={`transition-all hover:scale-110 ${location.pathname === item.path
+                        ? 'text-white bg-white/30 px-4 py-2 rounded-full'
+                        : 'text-white/90 hover:text-white px-4 py-2'
                       }`}
-                      aria-current={location.pathname === item.path ? 'page' : undefined}
-                    >
-                      {item.label}
+                    aria-current={location.pathname === item.path ? 'page' : undefined}
+                  >
+                    {item.label}
                   </Link>
                 )
               })
             }
           </div>
 
-          <select name="bahasa" id="bahasa" className="text-white bg-white/30 px-4 py-2 rounded-full transition-all hover:scale-110 hover:cursor-pointer">
+          {/* <select name="bahasa" id="bahasa" className="text-white bg-white/30 px-4 py-2 rounded-full transition-all hover:scale-110 hover:cursor-pointer">
             <option value="indonesia">Indonesia</option>
             <option value="english">English</option>
-          </select>
+          </select> */}
 
+          <button
+            className="bg-red-600 px-4 py-2 rounded-full text-white hover:scale-110 hover:cursor-pointer flex items-center gap-2"
+            onClick={() => { window.api.clearFinished(); window.api.clearQuiz(); navigate('/') }}
+          >
+            <CiWarning className="w-7 h-7"/> Hapus progress
+          </button>
         </div>
 
       </div>
