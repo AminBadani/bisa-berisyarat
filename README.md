@@ -17,7 +17,7 @@ File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
 ## Demo - Work In Progress
-<video src="public/demo.mp4" height="300"></video> 
+https://github.com/user-attachments/assets/246cbd31-cc54-452b-a8cd-8270bcb9a143
 
 # Object Oriented Programming (OOP)
 
@@ -136,4 +136,5 @@ class LearningModule {
     get countMaterials() { return this._countMaterials }
     set countMaterials(value: number) { this._countMaterials = value }
 }
+
 ```
