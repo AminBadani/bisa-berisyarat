@@ -9,13 +9,13 @@ Aplikasi belajar bahasa isyarat menggunakan Sistem Isyarat Bahasa Indonesia (SIB
 File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari masing-masing folder
 1. `/src/assets`: berisi assets yang digunakan dalam project, misal gambar huruf dan suara
 2. `/src/components`: berisi komponen custom seperti Card, Navbar, dan Radio, sehingga bisa digunakan diberbagai halaman hanya dengan nama komponennya (tanpa perlu menulis ulang kode)
-3. `/src/data`: berisi file .json (read-only) seperti letter.json dan word.json, yang nantinya digunakan ketika membuat objek di dalam program
+3. `/src/data`: berisi file .json (read-only) seperti `letter.json` dan `word.json`, yang nantinya digunakan ketika membuat objek di dalam program
 4. `/src/models`: berisi file Class yang digunakan untuk membuat objek dengan konsep PBO (Pemrograman Berorientasi Objek)
 5. `/src/pages`: berisi file .tsx yang berfungsi sebagai user interface untuk ditampilkan ke layar pengguna
 6. `/src/stores`: berisi file yang digunakan agar objek-objek dari class yang sudah dibuat/di-inisialisasi bisa diakses antar halaman (dapat diakses di semua halaman)
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
-**Catatan:** Tempat penyimpanan progres pengguna (app-data.json) berbeda-beda tergantung sistem operasi
+**Catatan:** Tempat penyimpanan progres pengguna (`app-data.json`) berbeda-beda tergantung sistem operasi
 - Mac OS: `~/Library/Application Support/bisa-berisyarat`
 - Windows: `C:\Users\<you>\AppData\Local\bisa-berisyarat`
 - Linux: `~/.config/bisa-berisyarat`
@@ -39,7 +39,7 @@ Class dari program disimpan di dalam folder `/src/models/`.
 - `Class`: blueprint dari objek
 - `Object`: perwujudan nyata dari class
 
-Sebuah class berisi atribut dan fungsi, atribut adalah hal-hal yang melekat pada sebuah objek, sedangkan fungsi adalah perilaku/sifat dari objek. Didalam program terdapat 5 `Class`, yakni 3 `Superclass` dan 2 `Subclass`
+Sebuah class berisi atribut dan fungsi, atribut adalah hal-hal yang melekat pada sebuah objek, sedangkan fungsi adalah perilaku/sifat dari objek. Didalam program terdapat 5 `Class`, yakni 3 `superclass` dan 2 `subclass`
 
 1. `LearningModules`: digunakan untuk membuat objek modul pelajaran
     - `AlphabetModule`: turunan modul pelajaran, khusus untuk belajar huruf 
@@ -87,7 +87,7 @@ class LearningModule {
 
 ## Inherintance
 
-Sebuah class dapat mewarisi atribut dan fungsinya ke class lain. Di dalam _typescript_, sebuah class dapat menggunakan _keyword_ `extends` untuk dapat menjadi sebuah `Subclass`. Berikut ini adalah contoh isi dari `Class AlphabetModule`
+Sebuah class dapat mewarisi atribut dan fungsinya ke class lain. Di dalam _typescript_, sebuah class dapat menggunakan _keyword_ `extends` untuk dapat menjadi sebuah `subclass`. Berikut ini adalah contoh isi dari `Class AlphabetModule`
 ```typescript
 class AlphabetModule extends LearningModule {
 
@@ -142,5 +142,6 @@ class LearningModule {
 }
 
 ```
+
 
 
