@@ -2,7 +2,6 @@
 
 Aplikasi belajar bahasa isyarat menggunakan Sistem Isyarat Bahasa Indonesia untuk anak-anak. Dibuat menggunakan [Electron-Vite](https://electron-vite.github.io/) + [React](https://react.dev/) + [Tailwind](https://tailwindcss.com/)
 
-
 # Development
 ## Main Structure of The Project
 <img src="public/structure.png" alt="structure" width="300"/>
@@ -17,14 +16,14 @@ File utama dari project berada di `/src`, berikut ini adalah isi dan fungsi dari
 7. `/src/types`: berisi tipe data custom agar tidak perlu menulis ulang tipe data yang sama berulang kali
 
 ## Demo - Work In Progress
-https://github.com/user-attachments/assets/246cbd31-cc54-452b-a8cd-8270bcb9a143
+
 
 # Object Oriented Programming (OOP)
 
 Aplikasi ini dibuat untuk tugas kuliah Pemorograman Berorientasi Objek (PBO), sehingga logika program dibuat dengan menerapkan konsep-konse dalam PBO. Adapun konsep-konsep yang digunakan antara lain:
 - [x] Object & Class
 - [x] Inheritance (pewarisam)
-- [ ] Polimorphism 
+- [ ] Polymorphism 
 - [x] Encapsulation
 
 ## Implementasi OOP didalam kode program
@@ -104,9 +103,9 @@ class AlphabetModule extends LearningModule {
 }
 ```
 
-## Polimorphism
+## Polymorphism
 
-_Polimorphism_ adalah konsep untuk suatu `subclass` menggunakan fungsi yang diwarisksn kepadanya, namun dengan isi dan/atau tipe yang berbeda. Ada 2 jenis polimorfisme
+_Polymorphism_ adalah konsep untuk suatu `subclass` menggunakan fungsi yang diwarisksn kepadanya, namun dengan isi dan/atau tipe yang berbeda. Ada 2 jenis polimorfisme
 1. Method _Overriding_: fungsi dengan nama dan tipe yang sama dengan `superclass`, namun isi di dalamnya berbeda
 2. Method _Overloading_: fungsi dengan nama yang sama dengan `superclass`, namun menggunakan tipe dan parameter yang berbeda 
 
@@ -136,5 +135,4 @@ class LearningModule {
     get countMaterials() { return this._countMaterials }
     set countMaterials(value: number) { this._countMaterials = value }
 }
-
 ```
