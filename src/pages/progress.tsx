@@ -85,7 +85,7 @@ function Progress() {
             </div>
             <div>
               <p className="text-gray-700">Item Dipelajari</p>
-              <p className="text-gray-800">{modules[0].countFinished + modules[1].countFinished} / {modules[0].countMaterials + modules[1].countMaterials}</p>
+              <p className="text-gray-800">{modules[0]?.countFinished + modules[1]?.countFinished} / {modules[0]?.countMaterials + modules[1]?.countMaterials}</p>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ function Progress() {
             </div>
             <div>
               <p className="text-gray-700">Progress Belajar</p>
-              <p className="text-gray-800">{((modules[0].countFinished + modules[1].countFinished) / (modules[0].countMaterials + modules[1].countMaterials) * 100).toFixed(0)}%</p>
+              <p className="text-gray-800">{((modules[0]?.countFinished + modules[1]?.countFinished) / (modules[0]?.countMaterials + modules[1]?.countMaterials) * 100).toFixed(0)}%</p>
             </div>
           </div>
         </div>
@@ -121,7 +121,13 @@ function Progress() {
             </div>
             <div>
               <p className="text-gray-700">Rata-rata Skor Kuis</p>
-              <p className="text-gray-800">{(quizHistory.map(item => item.score).reduce((a, b) => a + b, 0) / quizHistory.length || 0) * 100}%</p>
+              <p className="text-gray-800">
+                {
+                  quizHistory.map(item => item.score).reduce((a, b) => a + b, 0) || 0 /
+                  quizHistory.map(item => item.total).reduce((a, b) => a + b, 0) || 0 *
+                  100
+                }%
+              </p>
             </div>
           </div>
         </div>
@@ -173,14 +179,14 @@ function Progress() {
               <div className="p-6 bg-linear-to-br from-pink-50 to-purple-50 border-2 shadow-lg border-white">
                 <h2 className="text-gray-800 mb-6">📖 Detail Per Modul</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {modules.map((modules, index) => {
+                  {modules?.map((modules, index) => {
                     const Icon = modules.icon;
                     const completed = modules.countFinished;
                     const percentage = ((completed / modules.countMaterials) * 100).toFixed(0);
 
                     return (
                       <div key={index}>
-                        <div className="p-4 border-white border-2 bg-linear-to-br from-blue-100 to-cyan-100 shadow-md">
+                        <div className="p-4 border-white border-2 bg-linear-to-br from-blue-100 to-cyan-100 shadow-xl">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="p-2 rounded-lg bg-linear-to-br from-pink-400 to-rose-500">
                               {Icon}
